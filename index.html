@@ -1,0 +1,1979 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>LoveWorld ChMS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --ink:#0a0f1e;
+  --surface:#131b2a;
+  --surface2:#1a2438;
+  --surface3:#222d44;
+  --rim:rgba(255,255,255,.08);
+  --rim2:rgba(255,255,255,.14);
+  --gold:#d4a843;
+  --gold2:#f0c060;
+  --gold-dim:rgba(212,168,67,.14);
+  --text:#e8e4dc;
+  --text2:#9aa3b2;
+  --text3:#5f6a80;
+  --green:#34c97e;
+  --green-dim:rgba(52,201,126,.14);
+  --blue:#60a8f0;
+  --blue-dim:rgba(96,168,240,.14);
+  --orange:#f0a060;
+  --orange-dim:rgba(240,160,96,.14);
+  --purple:#a878f0;
+  --purple-dim:rgba(168,120,240,.14);
+  --red:#f07070;
+  --red-dim:rgba(240,112,112,.14);
+  --r:12px;
+  --sans:'Outfit',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --serif:'Playfair Display',Georgia,'Times New Roman',serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+body{
+  margin:0;height:100%;
+  font-family:var(--sans);
+  background:var(--ink);
+  color:var(--text);
+  font-size:15px;line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--gold2);outline-offset:2px;border-radius:4px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ─── App shell ─── */
+.app{display:flex;height:100%;min-height:0}
+.sidebar{
+  width:236px;flex:0 0 236px;background:var(--surface);
+  border-right:1px solid var(--rim);display:flex;flex-direction:column;
+  padding-top:env(safe-area-inset-top,0px);
+}
+.brand{padding:20px 18px 16px;border-bottom:1px solid var(--rim)}
+.brand-mark{display:flex;align-items:center;gap:10px}
+.brand-emblem{
+  width:36px;height:36px;border-radius:10px;flex:0 0 36px;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  display:flex;align-items:center;justify-content:center;
+  color:#2a1f06;font-size:19px;font-weight:700;
+}
+.brand-name{font-family:var(--serif);font-size:17px;font-weight:700;letter-spacing:-.2px;line-height:1.1}
+.brand-sub{font-size:11px;color:var(--text3);margin-top:1px}
+.nav{flex:1;overflow-y:auto;padding:12px 10px}
+.nav-group{font-size:10.5px;letter-spacing:.9px;color:var(--text3);padding:14px 10px 6px;font-weight:600}
+.nav-item{
+  display:flex;align-items:center;gap:10px;width:100%;
+  padding:9px 10px;border-radius:9px;border:0;background:none;
+  color:var(--text2);cursor:pointer;text-align:left;font-size:14px;
+  transition:background .12s,color .12s;
+}
+.nav-item:hover{background:var(--surface2);color:var(--text)}
+.nav-item.on{background:var(--gold-dim);color:var(--gold2);font-weight:500}
+.nav-ico{width:18px;text-align:center;flex:0 0 18px;font-size:14px}
+.nav-count{margin-left:auto;font-size:11px;color:var(--text3);font-variant-numeric:tabular-nums}
+
+.who{padding:12px;border-top:1px solid var(--rim)}
+.who-box{background:var(--surface2);border:1px solid var(--rim);border-radius:10px;padding:10px 12px}
+.who-label{font-size:10.5px;color:var(--text3);margin-bottom:5px}
+.who select{
+  width:100%;background:var(--ink);border:1px solid var(--rim2);color:var(--text);
+  border-radius:7px;padding:7px 8px;font-size:13px;cursor:pointer;
+}
+.who-name{font-size:12px;color:var(--text2);margin-top:7px;line-height:1.35}
+
+.main{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden}
+.topbar{
+  display:flex;align-items:center;gap:14px;padding:16px 26px;
+  border-bottom:1px solid var(--rim);background:var(--ink);flex-wrap:wrap;
+}
+.topbar h1{font-family:var(--serif);font-size:23px;font-weight:600;margin:0;letter-spacing:-.3px}
+.topbar .sub{font-size:12.5px;color:var(--text3);margin-top:2px}
+.topbar-spacer{flex:1}
+.search{
+  background:var(--surface2);border:1px solid var(--rim);border-radius:9px;
+  padding:8px 12px;min-width:210px;color:var(--text);
+}
+.search::placeholder{color:var(--text3)}
+.content{flex:1;overflow-y:auto;padding:22px 26px 60px;scroll-behavior:smooth}
+.menu-btn{display:none;background:var(--surface2);border:1px solid var(--rim);border-radius:9px;padding:8px 11px;cursor:pointer}
+
+/* ─── Primitives ─── */
+.card{background:var(--surface);border:1px solid var(--rim);border-radius:var(--r);padding:18px}
+.card-h{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.card-h h3{font-size:14.5px;font-weight:600;margin:0}
+.card-h .hint{font-size:11.5px;color:var(--text3);margin-left:auto}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.g-auto{grid-template-columns:repeat(auto-fit,minmax(215px,1fr))}
+
+.kpi{background:var(--surface);border:1px solid var(--rim);border-radius:var(--r);padding:16px 18px}
+.kpi-label{font-size:12px;color:var(--text2)}
+.kpi-val{font-family:var(--serif);font-size:30px;font-weight:700;line-height:1.1;margin-top:5px;font-variant-numeric:tabular-nums}
+.kpi-note{font-size:11.5px;color:var(--text3);margin-top:5px}
+.kpi.gold .kpi-val{color:var(--gold2)}
+.kpi.green .kpi-val{color:var(--green)}
+.kpi.blue .kpi-val{color:var(--blue)}
+.kpi.purple .kpi-val{color:var(--purple)}
+
+.btn{
+  background:var(--surface2);border:1px solid var(--rim2);color:var(--text);
+  border-radius:9px;padding:8px 14px;cursor:pointer;font-size:13.5px;
+  transition:background .12s,border-color .12s;
+}
+.btn:hover{background:var(--surface3)}
+.btn.primary{background:linear-gradient(135deg,var(--gold),var(--gold2));border-color:transparent;color:#2a1f06;font-weight:600}
+.btn.primary:hover{filter:brightness(1.07)}
+.btn.sm{padding:5px 10px;font-size:12px;border-radius:7px}
+.btn.ghost{background:none}
+.btn:disabled{opacity:.42;cursor:not-allowed}
+
+.pill{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500;white-space:nowrap}
+.pill.gold{background:var(--gold-dim);color:var(--gold2);border:1px solid rgba(212,168,67,.3)}
+.pill.green{background:var(--green-dim);color:var(--green);border:1px solid rgba(52,201,126,.3)}
+.pill.blue{background:var(--blue-dim);color:var(--blue);border:1px solid rgba(96,168,240,.3)}
+.pill.orange{background:var(--orange-dim);color:var(--orange);border:1px solid rgba(240,160,96,.3)}
+.pill.purple{background:var(--purple-dim);color:var(--purple);border:1px solid rgba(168,120,240,.3)}
+.pill.red{background:var(--red-dim);color:var(--red);border:1px solid rgba(240,112,112,.3)}
+.pill.grey{background:var(--surface2);color:var(--text3);border:1px solid var(--rim)}
+
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{
+  text-align:left;font-size:11.5px;color:var(--text3);font-weight:600;
+  padding:8px 10px;border-bottom:1px solid var(--rim);white-space:nowrap;
+}
+td{padding:10px;border-bottom:1px solid rgba(255,255,255,.045);vertical-align:middle}
+tbody tr{cursor:pointer;transition:background .1s}
+tbody tr:hover{background:var(--surface2)}
+tbody tr.nohover{cursor:default}
+tbody tr.nohover:hover{background:none}
+.num{font-variant-numeric:tabular-nums;text-align:right}
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+
+.avatar{
+  width:32px;height:32px;border-radius:50%;flex:0 0 32px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:600;color:#2a1f06;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+}
+.avatar.lg{width:58px;height:58px;flex-basis:58px;font-size:20px}
+.who-row{display:flex;align-items:center;gap:10px}
+.who-row .nm{font-weight:500}
+.who-row .mt{font-size:11.5px;color:var(--text3)}
+
+.bar{height:6px;border-radius:4px;background:var(--surface3);overflow:hidden;min-width:60px}
+.bar span{display:block;height:100%;border-radius:4px;background:var(--gold)}
+.bar.green span{background:var(--green)}
+.bar.blue span{background:var(--blue)}
+.bar.red span{background:var(--red)}
+
+.empty{text-align:center;padding:44px 20px;color:var(--text3)}
+.empty .big{font-size:30px;margin-bottom:10px;opacity:.55}
+.empty p{margin:0 0 4px;font-size:14px;color:var(--text2)}
+.empty small{font-size:12.5px}
+
+.locked{
+  border:1px dashed rgba(255,255,255,.14);border-radius:var(--r);
+  padding:30px 20px;text-align:center;color:var(--text3);background:var(--surface)
+}
+
+.toast{
+  position:fixed;left:50%;transform:translateX(-50%);
+  bottom:calc(24px + env(safe-area-inset-bottom,0px));
+  background:var(--surface3);border:1px solid var(--rim2);color:var(--text);
+  padding:11px 18px;border-radius:10px;font-size:13.5px;z-index:90;
+  box-shadow:0 12px 34px rgba(0,0,0,.5);max-width:calc(100vw - 32px);
+}
+
+.modal-bg{
+  position:fixed;inset:0;background:rgba(5,8,16,.72);z-index:100;
+  display:flex;align-items:center;justify-content:center;padding:20px;
+}
+.modal{
+  background:var(--surface);border:1px solid var(--rim2);border-radius:16px;
+  padding:22px;width:100%;max-width:460px;max-height:86vh;overflow-y:auto;
+}
+.modal h3{margin:0 0 4px;font-family:var(--serif);font-size:19px;font-weight:600}
+.modal .msub{font-size:12.5px;color:var(--text3);margin-bottom:16px}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:12px;color:var(--text2);margin-bottom:5px}
+.field input,.field select,.field textarea{
+  width:100%;background:var(--ink);border:1px solid var(--rim2);
+  border-radius:8px;padding:9px 11px;color:var(--text);
+}
+.field textarea{min-height:64px;resize:vertical}
+.modal-actions{display:flex;gap:9px;justify-content:flex-end;margin-top:18px}
+
+.breadcrumb{background:none;border:0;color:var(--text3);cursor:pointer;font-size:13px;padding:0;margin-bottom:12px}
+.breadcrumb:hover{color:var(--gold2)}
+
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--rim);margin-bottom:18px;overflow-x:auto}
+.tab{
+  background:none;border:0;border-bottom:2px solid transparent;
+  color:var(--text3);padding:9px 14px;cursor:pointer;font-size:13.5px;white-space:nowrap;
+}
+.tab:hover{color:var(--text2)}
+.tab.on{color:var(--gold2);border-bottom-color:var(--gold)}
+
+.chip-row{display:flex;gap:7px;flex-wrap:wrap}
+.chip{
+  background:var(--surface2);border:1px solid var(--rim);border-radius:8px;
+  padding:5px 11px;font-size:12.5px;color:var(--text2);cursor:pointer;
+}
+.chip.on{background:var(--gold-dim);border-color:rgba(212,168,67,.35);color:var(--gold2)}
+
+.note{
+  background:var(--surface2);border-left:3px solid var(--gold);border-radius:0 9px 9px 0;
+  padding:11px 14px;font-size:12.5px;color:var(--text2);line-height:1.55;
+}
+.note.green{border-left-color:var(--green)}
+.note.red{border-left-color:var(--red)}
+.note strong{color:var(--text);font-weight:600}
+
+/* FS class grid */
+.fsgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:9px}
+.fscell{
+  border:1px solid var(--rim);border-radius:10px;padding:11px;background:var(--surface2);
+  cursor:pointer;transition:border-color .12s,background .12s;
+}
+.fscell:hover{border-color:var(--rim2)}
+.fscell.done{background:var(--green-dim);border-color:rgba(52,201,126,.3)}
+.fscell.part{background:var(--orange-dim);border-color:rgba(240,160,96,.3)}
+.fscell .cno{font-size:10.5px;color:var(--text3);font-weight:600}
+.fscell .cnm{font-size:12.5px;font-weight:500;margin:3px 0 7px;line-height:1.3;min-height:32px}
+.fscell .cst{display:flex;gap:5px;font-size:10.5px;color:var(--text3);flex-wrap:wrap}
+.tick{display:inline-flex;align-items:center;gap:3px}
+.tick.y{color:var(--green)}
+.tick.n{color:var(--text3)}
+
+.hm{display:flex;gap:3px;flex-wrap:wrap}
+.hm i{width:13px;height:13px;border-radius:3px;background:var(--surface3);display:block}
+.hm i[data-v="1"]{background:rgba(52,201,126,.3)}
+.hm i[data-v="2"]{background:rgba(52,201,126,.55)}
+.hm i[data-v="3"]{background:rgba(52,201,126,.85)}
+.hm i[data-v="x"]{background:rgba(240,112,112,.3)}
+
+svg.chart{display:block;width:100%;height:auto;overflow:visible}
+.legend-row{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--text3);margin-top:9px}
+.legend-row b{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:middle}
+
+.mono{font-variant-numeric:tabular-nums}
+.muted{color:var(--text3)}
+.small{font-size:12px}
+.right{text-align:right}
+.stack{display:flex;flex-direction:column;gap:14px}
+.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.hidden{display:none!important}
+
+/* ─── Responsive ─── */
+@media(max-width:1100px){.g4{grid-template-columns:repeat(2,minmax(0,1fr))}.g3{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:860px){
+  .sidebar{
+    position:fixed;inset:0 auto 0 0;z-index:80;transform:translateX(-100%);
+    transition:transform .2s;box-shadow:0 0 50px rgba(0,0,0,.6);
+  }
+  .sidebar.open{transform:none}
+  .menu-btn{display:block}
+  .content{padding:16px 14px 70px}
+  .topbar{padding:12px 14px}
+  .topbar h1{font-size:19px}
+  .g2,.g3,.g4{grid-template-columns:1fr}
+  .search{min-width:0;width:100%;order:3}
+}
+.scrim{position:fixed;inset:0;background:rgba(5,8,16,.6);z-index:79}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+"use strict";
+
+/* ══════════════════════════════════════════════════════════════
+   LoveWorld ChMS — Phase 1 prototype
+   Curriculum, exam weighting and graduation rules follow the
+   Foundation School Manual (March 2021 edition).
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Foundation School curriculum (Manual, Classes 1–7) ───────── */
+const FS_CLASSES = [
+  { id:'c1', no:'Class 1',  title:'The New Creature',
+    aim:'Every participant understands and accepts that he is a new creature with a life and nature from God.',
+    scripture:'2 Cor 5:17-18 · Rom 6:4 · Eph 2:10 · 2 Pet 1:3 · 1 Pet 2:9',
+    assignment:'Explain "if any man be in Christ he is a new creation" using yourself as an example. Answer: will I be continually assured of my salvation despite what I feel or see?' },
+  { id:'c2', no:'Class 2',  title:'The Holy Spirit',
+    aim:'Introduce the person, ministry and fellowship of the Holy Spirit, and being ever full of the Spirit.',
+    scripture:'Jn 14:16-17 · Acts 1:8 · Eph 5:18-19 · Joel 2:28',
+    assignment:'Study the ministry of the Holy Spirit in the believer. Prescribed Ministry material to be completed before Class 3.' },
+  { id:'c3', no:'Class 3',  title:'Christian Doctrines',
+    aim:'Ground the new convert in the foundational doctrines of our Christianity.',
+    scripture:'Heb 6:1-2 · 2 Tim 2:15 · Rom 10:9-10',
+    assignment:'Read the prescribed doctrine material and answer the questions at the end of each chapter.' },
+  { id:'c4a', no:'Class 4A', title:'Evangelism',
+    aim:'A dynamic lifestyle of soulwinning: the 7 Steps to Perfecting Soulwinning.',
+    scripture:'Mk 16:15 · Prov 11:30 · Rom 12:11 (AMP)',
+    assignment:'Read the 7 Steps. Get "Join This Chariot", answer the chapter questions, bring the completed book. Reach out to 2 people and bring them to church next week. Sign up on SoulTracker.' },
+  { id:'c4b', no:'Class 4B', title:'Introduction to Cell Ministry',
+    aim:'Understand the cell as the smallest unit of the church and the 17 activities that happen in a cell.',
+    scripture:'Acts 2:46 · Acts 20:20',
+    assignment:'Attend a cell meeting and write what you observed of the 17 cell activities.' },
+  { id:'c5', no:'Class 5',  title:'Christian Character and Prosperity',
+    aim:'Growth is progressive and seen in the quality of Christ-like character. Covers giving, tithes and first fruits.',
+    scripture:'2 Cor 3:18 · Mal 3:10 · Rom 11:16 · 2 Cor 9:7 · Phil 1:5-7',
+    assignment:'Study "The Power of Your Mind". Begin a record of your tithe and giving.' },
+  { id:'c6', no:'Class 6',  title:'The Local Assembly and LoveWorld Inc.',
+    aim:'Why you must belong to a local assembly and attend consistently. Vision, mission and statements of faith.',
+    scripture:'Heb 10:25 · Ps 92:13 · Eph 4:11-13',
+    assignment:'Write out the Ministry vision and mission statement and what your role in it is.' },
+  { id:'c7', no:'Class 7',  title:'Mobile Technology for Growth and Evangelism',
+    aim:'Technology is primarily for the propagation of the gospel. Ministry platforms and how to use them.',
+    scripture:'Mk 16:15 · Hab 2:14',
+    assignment:'Install and set up PCDL, KingsChat, Rhapsody and SoulTracker. Download one message and share it with 3 people.' }
+];
+
+/* Manual: Section A 30% attendance, Section B 30% assignments, Section C 40% exam. */
+const WEIGHT = { attendance:30, assignments:30, exam:40 };
+const EXAM_PASS = 50;            // Section C raw score below 50% → re-sit, withdrawn from graduation
+const POSTGRAD_MONTHS = 3;       // Manual: post-graduation assessment lasts 3 months
+
+const GIVING_TYPES = [
+  { id:'tithe',       label:'Tithe',            note:'One tenth of income. Mal 3:10.',              flow:'Local church' },
+  { id:'firstfruits', label:'First Fruits',     note:'First and best of all increase. Rom 11:16.',  flow:'Local church' },
+  { id:'freewill',    label:'Freewill Offering',note:'Given freely as the member decides. 2 Cor 9:7.',flow:'Local church' },
+  { id:'seed',        label:'Seed Offering',    note:'Sown toward a specific expectation.',         flow:'Local church' },
+  { id:'service',     label:'Service Offering', note:'Sunday and midweek collection.',              flow:'Church → Zone' },
+  { id:'partnership', label:'Partnership Seed', note:'ISP, Rhapsody, InnerCity Mission. Phil 1:5-7.',flow:'Church → Zone → HQ' }
+];
+
+const DEPARTMENTS = [
+  { id:'choir',    name:'Choir',              icon:'♪' },
+  { id:'ushering', name:'Ushering',           icon:'✋' },
+  { id:'media',    name:'Media',              icon:'▶' },
+  { id:'children', name:"Children's Church",  icon:'✿' },
+  { id:'protocol', name:'Protocol',           icon:'✦' },
+  { id:'celladmin',name:'Cell Administration', icon:'▦' }
+];
+
+const ROLES = {
+  zone_pastor:{ label:'Zone Pastor',    scope:'zone',   nav:['dashboard','members','fs','attendance','giving','cells','depts','reports'] },
+  pastor:     { label:'Pastor',         scope:'church', nav:['dashboard','members','fs','attendance','giving','cells','depts','reports'] },
+  principal:  { label:'FS Principal',   scope:'church', nav:['dashboard','members','fs','attendance','reports'] },
+  cell_leader:{ label:'Cell Leader',    scope:'cell',   nav:['dashboard','members','fs','attendance','cells'] },
+  dept_head:  { label:'Department Head',scope:'dept',   nav:['dashboard','members','attendance','depts'] },
+  finance:    { label:'Finance Officer',scope:'church', nav:['dashboard','members','giving','reports'] },
+  member:     { label:'Member',         scope:'self',   nav:['myprofile'] }
+};
+
+const ENTRY_POINTS = ['QR code scan','Web registration link','Registered by cell leader','SoulTracker sync','Transfer from CE branch'];
+
+/* ── Deterministic RNG so every viewer sees the same church ───── */
+let _s = 20260921;
+function rnd(){ _s = (_s * 1664525 + 1013904223) % 4294967296; return _s / 4294967296; }
+const pick = a => a[Math.floor(rnd()*a.length)];
+const int  = (a,b) => a + Math.floor(rnd()*(b-a+1));
+const chance = p => rnd() < p;
+
+const FIRST_F = ['Rutendo','Tendai','Chiedza','Nyasha','Farai','Tariro','Rufaro','Vimbai','Anesu','Kudzai','Tanaka','Ngozi','Chiamaka','Blessing','Precious','Memory','Shamiso','Natasha','Panashe','Yeukai','Tsitsi','Ropafadzo'];
+const FIRST_M = ['Tinashe','Simbarashe','Munashe','Takudzwa','Tapiwa','Emmanuel','Tatenda','Brian','Obed','Shingai','Munya','Prosper','Gift','Nigel','Tawanda','Kelvin','Believe','Ngoni','Tonderai','Chenai'];
+const LAST = ['Moyo','Ncube','Chirwa','Mutasa','Dube','Sibanda','Marufu','Chikwava','Nyoni','Mhlanga','Zvobgo','Makoni','Gwatidzo','Muchena','Banda','Mpofu','Chigumba','Mandaza','Nhongo','Katsande'];
+
+const CELLS = [
+  { id:'cl1', name:'Avondale Cell',      area:'Avondale',       leaderName:'Tinashe Moyo' },
+  { id:'cl2', name:'Mount Pleasant Cell',area:'Mount Pleasant', leaderName:'Chiedza Ncube' },
+  { id:'cl3', name:'Belvedere Cell',     area:'Belvedere',      leaderName:'Simbarashe Dube' },
+  { id:'cl4', name:'Hatfield Cell',      area:'Hatfield',       leaderName:'Vimbai Sibanda' },
+  { id:'cl5', name:'Budiriro Cell',      area:'Budiriro',       leaderName:'Takudzwa Chirwa' },
+  { id:'cl6', name:'Chitungwiza Cell',   area:'Chitungwiza',    leaderName:'Nyasha Mutasa' }
+];
+
+const CHURCH = { id:'lgsi', name:'Christ Embassy Harare Central', group:'Harare Group A', zone:'CE Zimbabwe Zone' };
+
+/* Sister churches — only a Zone Pastor sees these */
+const ZONE_CHURCHES = [
+  { id:'lgsi', name:'Christ Embassy Harare Central', group:'Harare Group A', members:0, fsRate:0, own:true },
+  { id:'ch2', name:'Christ Embassy Borrowdale',  group:'Harare Group A', members:186, grads:71, enrolled:94,  attend:79 },
+  { id:'ch3', name:'Christ Embassy Chitungwiza', group:'Harare Group B', members:241, grads:118,enrolled:141, attend:83 },
+  { id:'ch4', name:'Christ Embassy Bulawayo',    group:'Bulawayo Group', members:312, grads:154,enrolled:198, attend:74 },
+  { id:'ch5', name:'Christ Embassy Mutare',      group:'Manicaland',     members:97,  grads:22, enrolled:48,  attend:61 },
+  { id:'ch6', name:'Christ Embassy Gweru',       group:'Midlands',       members:134, grads:58, enrolled:77,  attend:80 }
+];
+
+const TODAY = new Date(2026,8,21);            // 21 September 2026
+const day = n => { const d = new Date(TODAY); d.setDate(d.getDate()+n); return d; };
+const iso = d => d.toISOString().slice(0,10);
+const fmtDate = s => { if(!s) return '—'; const d=new Date(s+'T00:00:00');
+  return d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}); };
+const fmtShort = s => { if(!s) return '—'; const d=new Date(s+'T00:00:00');
+  return d.toLocaleDateString('en-GB',{day:'numeric',month:'short'}); };
+const money = n => '$' + n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const monthKey = s => s.slice(0,7);
+const initials = n => n.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
+
+/* ── Build the congregation ──────────────────────────────────── */
+function seedMembers(){
+  const out = [];
+  const n = 54;
+  for(let i=0;i<n;i++){
+    const female = chance(.55);
+    const name = (female?pick(FIRST_F):pick(FIRST_M)) + ' ' + pick(LAST);
+    const joinedAgo = int(7, 700);
+    const joined = iso(day(-joinedAgo));
+    const cell = pick(CELLS);
+    const isTransfer = chance(.1);
+
+    const m = {
+      id:'m'+(100+i), name, gender: female?'F':'M',
+      phone:'+263 7' + int(1,9) + ' ' + int(100,999) + ' ' + int(1000,9999),
+      joined, entry: isTransfer ? 'Transfer from CE branch' : pick(ENTRY_POINTS.slice(0,4)),
+      cellId: cell.id, depts:[], souls:0, leadership:null,
+      transfer: isTransfer ? { from: pick(['CE Lagos Zone 3','CE Johannesburg','CE Accra Ghana','CE Lusaka']),
+                               certNo:'CE-'+int(10000,99999), status: chance(.75)?'Verified':(chance(.5)?'Pending':'Rejected') } : null,
+      fs:{ enrolled:null, classes:{}, exam:null, graduated:null, certNo:null, postgrad:[] },
+      attendance:[], giving:[], fsTeacher:false
+    };
+
+    /* Foundation School journey */
+    let stage;
+    if(isTransfer && m.transfer.status==='Verified') stage = 'transfer';
+    else if(joinedAgo < 21) stage = chance(.5) ? 'first_timer' : 'enrolled';
+    else if(joinedAgo < 90) stage = chance(.25) ? 'first_timer' : (chance(.55) ? 'enrolled' : 'graduate');
+    else stage = chance(.72) ? 'graduate' : (chance(.6) ? 'enrolled' : 'first_timer');
+
+    if(stage === 'transfer'){
+      m.fs.graduated = iso(day(-joinedAgo - int(120,900)));
+      m.fs.certNo = m.transfer.certNo;
+      m.fs.transferred = true;
+      FS_CLASSES.forEach(c => m.fs.classes[c.id] = { attended:true, assignment:true, date:m.fs.graduated });
+    } else if(stage !== 'first_timer'){
+      /* A set runs 7 weeks plus an examination week, so nobody can have
+         graduated sooner than that — anchor every date to real elapsed time. */
+      if(stage === 'graduate' && joinedAgo < 75) stage = 'enrolled';
+      let start, reached;
+      if(stage === 'graduate'){
+        start = Math.max(63, Math.min(joinedAgo - 5, int(63, 420)));
+        reached = 7;
+      } else {
+        start = Math.max(7, Math.min(joinedAgo - 3, int(7, 48)));
+        reached = Math.min(6, Math.max(1, Math.floor(start/7)));
+      }
+      m.fs.enrolled = iso(day(-start));
+      for(let k=0;k<reached;k++){
+        const c = FS_CLASSES[k];
+        const attended = stage==='graduate' ? true : !chance(.12);
+        m.fs.classes[c.id] = {
+          attended,
+          assignment: attended ? (stage==='graduate' ? true : !chance(.22)) : false,
+          date: iso(day(-start + k*7))
+        };
+      }
+      if(stage === 'graduate'){
+        const raw = int(52, 97);
+        const gd = iso(day(-start + 56));
+        m.fs.exam = { raw, date: gd, sitting:1 };
+        m.fs.graduated = gd;
+        m.fs.certNo = 'CEHC/FS/' + gd.slice(0,4) + '/' + int(100,999);
+        const monthsSince = Math.floor((TODAY - new Date(gd+'T00:00:00'))/2592000000);
+        for(let q=1; q<=Math.min(monthsSince, POSTGRAD_MONTHS); q++){
+          m.fs.postgrad.push({ month:q, cellRole: q>1&&chance(.3)?'Bible study teacher':'Member',
+            deptRole: chance(.45)?pick(DEPARTMENTS).name:'—', converts:int(0,3) });
+        }
+      }
+    }
+
+    const graduated = !!m.fs.graduated;
+
+    /* Departments and leadership follow graduation — the Manual makes FS a prerequisite */
+    if(graduated && chance(.68)){
+      m.depts.push(pick(DEPARTMENTS).id);
+      if(chance(.22)) { const d2 = pick(DEPARTMENTS).id; if(!m.depts.includes(d2)) m.depts.push(d2); }
+    }
+    if(graduated && chance(.18)) m.leadership = pick(['Cell Leader','Assistant Cell Leader','Department Head','FS Teacher','Protocol Lead']);
+    if(m.leadership === 'FS Teacher'){ m.fsTeacher = true;
+      m.badgeRenewed = iso(day(-int(20,260))); }
+    if(graduated) m.souls = chance(.55) ? int(1,7) : 0;
+
+    /* Attendance over the last 26 weeks — cell meetings and Sunday services */
+    const weeks = Math.min(26, Math.floor(joinedAgo/7));
+    const loyal = .55 + rnd()*.42;
+    const drifting = chance(.16);
+    for(let w=weeks;w>=0;w--){
+      const decay = drifting ? Math.max(.12, loyal - (weeks-w)*.035) : loyal;
+      if(rnd() < decay)      m.attendance.push({ date: iso(day(-w*7 - 1)), type:'Sunday service' });
+      if(rnd() < decay*.85)  m.attendance.push({ date: iso(day(-w*7 - 4)), type:'Cell meeting' });
+      if(rnd() < decay*.35)  m.attendance.push({ date: iso(day(-w*7 - 3)), type:'Midweek service' });
+      if(m.fs.enrolled && !graduated && rnd() < .8) m.attendance.push({ date: iso(day(-w*7 - 2)), type:'Foundation School' });
+    }
+    m.drifting = drifting;
+
+    /* Giving — only members past Class 5 give consistently, per the Manual's teaching order */
+    const pastC5 = !!(m.fs.classes.c5 && m.fs.classes.c5.attended) || graduated;
+    if(pastC5){
+      const tither = chance(.62), base = int(20,180);
+      const partner = graduated && chance(.4);
+      for(let mo=Math.min(11, Math.floor(joinedAgo/30)); mo>=0; mo--){
+        const d = iso(day(-mo*30 - int(1,20)));
+        if(tither && (!drifting || mo>4) && chance(.86)) m.giving.push({ date:d, type:'tithe', amount: base + int(-8,25) });
+        if(chance(.7)) m.giving.push({ date:d, type:'freewill', amount: int(3,30) });
+        if(chance(.5)) m.giving.push({ date:d, type:'service', amount: int(2,15) });
+        if(partner && chance(.75)) m.giving.push({ date:d, type:'partnership', amount: int(15,90) });
+        if(chance(.12)) m.giving.push({ date:d, type:'firstfruits', amount: int(40,220) });
+        if(chance(.14)) m.giving.push({ date:d, type:'seed', amount: int(10,120) });
+      }
+      m.tither = tither;
+    }
+    out.push(m);
+  }
+
+  /* Cell leaders are real members */
+  CELLS.forEach(c => {
+    const pool = out.filter(m => m.cellId===c.id && m.fs.graduated);
+    const lead = pool[0] || out.find(m=>m.cellId===c.id) || out[0];
+    if(lead){ lead.leadership = 'Cell Leader'; c.leaderId = lead.id; c.leaderName = lead.name; }
+  });
+  DEPARTMENTS.forEach(d => {
+    const pool = out.filter(m => m.depts.includes(d.id) && m.fs.graduated);
+    if(pool.length){ pool[0].leadership = 'Department Head'; d.headId = pool[0].id; d.headName = pool[0].name; }
+    else d.headName = '—';
+  });
+  const teachers = out.filter(m=>m.fs.graduated).slice(0,5);
+  teachers.forEach(t => { t.fsTeacher = true; t.badgeRenewed = t.badgeRenewed || iso(day(-int(20,260))); });
+  return out;
+}
+
+const STATE = {
+  members: seedMembers(),
+  view:'dashboard',
+  role:'pastor',
+  memberId:null,
+  cellId:null,
+  deptId:null,
+  tab:null,
+  search:'',
+  menuOpen:false
+};
+
+/* ── Derived helpers ─────────────────────────────────────────── */
+const byId = id => STATE.members.find(m => m.id === id);
+const cellById = id => CELLS.find(c => c.id === id);
+const deptById = id => DEPARTMENTS.find(d => d.id === id);
+
+function fsStatus(m){
+  if(m.fs.graduated) return m.fs.transferred ? 'Graduate (transfer)' : 'Graduate';
+  if(m.fs.exam) return 'Awaiting graduation';
+  if(m.fs.enrolled) return 'In Foundation School';
+  return 'First timer';
+}
+function fsPill(m){
+  const s = fsStatus(m);
+  if(s.startsWith('Graduate')) return `<span class="pill green">${s}</span>`;
+  if(s === 'Awaiting graduation') return `<span class="pill gold">${s}</span>`;
+  if(s === 'In Foundation School') return `<span class="pill blue">Class ${classesDone(m)} of 7</span>`;
+  return `<span class="pill grey">First timer</span>`;
+}
+const classesDone = m => FS_CLASSES.filter(c => m.fs.classes[c.id] && m.fs.classes[c.id].attended).length;
+const assignmentsDone = m => FS_CLASSES.filter(c => m.fs.classes[c.id] && m.fs.classes[c.id].assignment).length;
+
+/* Manual, Examination Make-Up and Composition */
+function grade(m){
+  const a = classesDone(m), b = assignmentsDone(m);
+  const secA = (a/7) * WEIGHT.attendance;
+  const secB = (b/7) * WEIGHT.assignments;
+  const raw = m.fs.exam ? m.fs.exam.raw : null;
+  const secC = raw === null ? null : (raw/100) * WEIGHT.exam;
+  return {
+    a, b, raw, secA, secB, secC,
+    total: secA + secB + (secC || 0),
+    eligible: a === 7 && b === 7,
+    passed: raw !== null && raw >= EXAM_PASS,
+    needsMakeup: raw !== null && raw >= EXAM_PASS && raw < 100
+  };
+}
+
+function attendanceRate(m, weeks){
+  weeks = weeks || 12;
+  const from = iso(day(-weeks*7));
+  const hits = m.attendance.filter(a => a.date >= from && (a.type==='Cell meeting'||a.type==='Sunday service')).length;
+  return Math.min(100, Math.round(hits / (weeks*2) * 100));
+}
+function lastSeen(m){
+  if(!m.attendance.length) return null;
+  return m.attendance.map(a=>a.date).sort().slice(-1)[0];
+}
+function missedRun(m){
+  const last = lastSeen(m);
+  if(!last) return 99;
+  return Math.round((TODAY - new Date(last+'T00:00:00')) / 86400000 / 7);
+}
+const totalGiven = (m, type) =>
+  m.giving.filter(g => !type || g.type===type).reduce((s,g)=>s+g.amount, 0);
+
+/* Which members the signed-in role may see */
+function scopeMembers(){
+  const r = ROLES[STATE.role];
+  if(r.scope === 'cell')  return STATE.members.filter(m => m.cellId === ME.cellId);
+  if(r.scope === 'dept')  return STATE.members.filter(m => m.depts.includes(ME.deptId));
+  if(r.scope === 'self')  return STATE.members.filter(m => m.id === ME.id);
+  return STATE.members;
+}
+function canSeeMoney(){ return ['finance','pastor','zone_pastor'].includes(STATE.role); }
+function canEditMoney(){ return ['finance','pastor'].includes(STATE.role); }
+function canEditFS(){ return ['principal','pastor','zone_pastor'].includes(STATE.role); }
+
+/* The signed-in user */
+let ME = {};
+function setRole(role){
+  STATE.role = role;
+  const grads = STATE.members.filter(m=>m.fs.graduated);
+  if(role==='cell_leader'){
+    const c = CELLS[0]; ME = { name:c.leaderName, id:c.leaderId, cellId:c.id, sub:c.name };
+  } else if(role==='dept_head'){
+    const d = DEPARTMENTS.find(x=>x.headId) || DEPARTMENTS[0];
+    ME = { name:d.headName, id:d.headId, deptId:d.id, sub:d.name };
+  } else if(role==='member'){
+    const m = grads.find(x=>x.giving.length && x.depts.length) || grads[0] || STATE.members[0];
+    ME = { name:m.name, id:m.id, sub:'Member · '+cellById(m.cellId).name };
+  } else if(role==='zone_pastor'){
+    ME = { name:'Pastor Ephraim Chidhakwa', sub:CHURCH.zone };
+  } else if(role==='principal'){
+    ME = { name:'Sis. Ropafadzo Makoni', sub:'Foundation School' };
+  } else if(role==='finance'){
+    ME = { name:'Bro. Obed Mpofu', sub:'Finance office' };
+  } else {
+    ME = { name:'Pastor Tawanda Zvobgo', sub:CHURCH.name };
+  }
+  const nav = ROLES[role].nav;
+  if(!nav.includes(STATE.view)) STATE.view = nav[0];
+  STATE.memberId = role==='member' ? ME.id : null;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Charts — hand-drawn SVG, no libraries
+   ══════════════════════════════════════════════════════════════ */
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function lineChart(points, opts){
+  opts = opts || {};
+  const W = 640, H = opts.h || 170, PL = 34, PR = 10, PT = 12, PB = 24;
+  const max = Math.max(opts.max || 0, ...points.map(p=>p.v), 1);
+  const iw = W-PL-PR, ih = H-PT-PB;
+  const x = i => PL + (points.length<2 ? iw/2 : i*(iw/(points.length-1)));
+  const y = v => PT + ih - (v/max)*ih;
+  const d = points.map((p,i)=>`${i?'L':'M'}${x(i).toFixed(1)},${y(p.v).toFixed(1)}`).join(' ');
+  const area = d + ` L${x(points.length-1).toFixed(1)},${PT+ih} L${PL},${PT+ih} Z`;
+  const col = opts.color || 'var(--gold)';
+  const gid = 'g'+Math.random().toString(36).slice(2,8);
+  let grid = '';
+  [0,.5,1].forEach(f=>{
+    const yy = PT + ih*f;
+    grid += `<line x1="${PL}" y1="${yy}" x2="${W-PR}" y2="${yy}" stroke="rgba(255,255,255,.06)"/>
+      <text x="${PL-7}" y="${yy+3.5}" text-anchor="end" font-size="9.5" fill="var(--text3)">${Math.round(max*(1-f))}${opts.unit||''}</text>`;
+  });
+  const labels = points.map((p,i)=>
+    (points.length<=8 || i%Math.ceil(points.length/7)===0 || i===points.length-1)
+      ? `<text x="${x(i)}" y="${H-6}" text-anchor="middle" font-size="9.5" fill="var(--text3)">${esc(p.l)}</text>` : '').join('');
+  const dots = points.map((p,i)=>
+    `<circle cx="${x(i).toFixed(1)}" cy="${y(p.v).toFixed(1)}" r="3" fill="${col}"><title>${esc(p.l)}: ${p.v}${opts.unit||''}</title></circle>`).join('');
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(opts.label||'Trend chart')}">
+    <defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="${col}" stop-opacity=".26"/><stop offset="100%" stop-color="${col}" stop-opacity="0"/>
+    </linearGradient></defs>
+    ${grid}<path d="${area}" fill="url(#${gid})"/>
+    <path d="${d}" fill="none" stroke="${col}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
+    ${dots}${labels}</svg>`;
+}
+
+function barChart(groups, series, opts){
+  opts = opts || {};
+  const W = 640, H = opts.h || 180, PL = 40, PR = 10, PT = 12, PB = 24;
+  const iw = W-PL-PR, ih = H-PT-PB;
+  const max = Math.max(1, ...groups.map(g => series.reduce((s,se)=>s+(g.v[se.id]||0),0)));
+  const gw = iw/groups.length, bw = Math.min(26, gw*.62);
+  let grid = '';
+  [0,.5,1].forEach(f=>{
+    const yy = PT+ih*f;
+    grid += `<line x1="${PL}" y1="${yy}" x2="${W-PR}" y2="${yy}" stroke="rgba(255,255,255,.06)"/>
+      <text x="${PL-7}" y="${yy+3.5}" text-anchor="end" font-size="9.5" fill="var(--text3)">${opts.money?'$':''}${Math.round(max*(1-f))}</text>`;
+  });
+  let bars = '';
+  groups.forEach((g,i)=>{
+    const cx = PL + gw*i + gw/2;
+    let acc = 0;
+    series.forEach(se=>{
+      const v = g.v[se.id]||0; if(!v) return;
+      const h = (v/max)*ih;
+      const yy = PT+ih-acc-h; acc += h;
+      bars += `<rect x="${(cx-bw/2).toFixed(1)}" y="${yy.toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.max(h,1).toFixed(1)}" fill="${se.color}" rx="2">
+        <title>${esc(g.l)} · ${esc(se.label)}: ${opts.money?money(v):v}</title></rect>`;
+    });
+    bars += `<text x="${cx}" y="${H-6}" text-anchor="middle" font-size="9.5" fill="var(--text3)">${esc(g.l)}</text>`;
+  });
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(opts.label||'Bar chart')}">${grid}${bars}</svg>`;
+}
+
+function ring(pct, label, color){
+  const R = 34, C = 2*Math.PI*R;
+  return `<svg class="chart" viewBox="0 0 100 100" style="width:92px;height:92px" role="img" aria-label="${esc(label)}: ${pct}%">
+    <circle cx="50" cy="50" r="${R}" fill="none" stroke="var(--surface3)" stroke-width="9"/>
+    <circle cx="50" cy="50" r="${R}" fill="none" stroke="${color||'var(--gold)'}" stroke-width="9" stroke-linecap="round"
+      stroke-dasharray="${(C*pct/100).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 50 50)"/>
+    <text x="50" y="55" text-anchor="middle" font-size="21" font-weight="700" fill="var(--text)">${pct}</text></svg>`;
+}
+
+function last12Months(){
+  const out = [];
+  for(let i=11;i>=0;i--){
+    const d = new Date(TODAY.getFullYear(), TODAY.getMonth()-i, 1);
+    out.push({ key: d.toISOString().slice(0,7), l: d.toLocaleDateString('en-GB',{month:'short'}) });
+  }
+  return out;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Dashboard
+   ══════════════════════════════════════════════════════════════ */
+function viewDashboard(){
+  const ms = scopeMembers();
+  const grads = ms.filter(m=>m.fs.graduated);
+  const inFS = ms.filter(m=>m.fs.enrolled && !m.fs.graduated);
+  const firstTimers = ms.filter(m=>!m.fs.enrolled && !m.fs.graduated);
+  const rate = ms.length ? Math.round(grads.length/ms.length*100) : 0;
+  const avgAtt = ms.length ? Math.round(ms.reduce((s,m)=>s+attendanceRate(m),0)/ms.length) : 0;
+  const atRisk = ms.filter(m => missedRun(m) >= 2);
+
+  let html = `<div class="grid g4" style="margin-bottom:16px">
+    <div class="kpi gold"><div class="kpi-label">Members</div><div class="kpi-val">${ms.length}</div>
+      <div class="kpi-note">${firstTimers.length} first timers not yet enrolled</div></div>
+    <div class="kpi green"><div class="kpi-label">Foundation School graduates</div><div class="kpi-val">${grads.length}</div>
+      <div class="kpi-note">${rate}% conversion from first timer</div></div>
+    <div class="kpi blue"><div class="kpi-label">Currently in Foundation School</div><div class="kpi-val">${inFS.length}</div>
+      <div class="kpi-note">Across ${new Set(inFS.map(m=>classesDone(m))).size||0} different classes</div></div>
+    <div class="kpi purple"><div class="kpi-label">Attendance, last 12 weeks</div><div class="kpi-val">${avgAtt}%</div>
+      <div class="kpi-note">Cell meetings and Sunday services</div></div>
+  </div>`;
+
+  /* Zone Pastor gets the cross-church comparison instead of cell detail */
+  if(STATE.role === 'zone_pastor'){
+    const own = { ...ZONE_CHURCHES[0], members: ms.length, grads: grads.length, enrolled: inFS.length+grads.length, attend: avgAtt };
+    const all = [own, ...ZONE_CHURCHES.slice(1)].map(c => ({...c, fsRate: Math.round(c.grads/c.members*100)}))
+      .sort((a,b)=>b.fsRate-a.fsRate);
+    html += `<div class="card" style="margin-bottom:16px"><div class="card-h"><h3>Churches in ${CHURCH.zone}</h3>
+      <span class="hint">Conversion rate is reported and assessed annually</span></div>
+      <div class="tbl-wrap"><table><thead><tr><th>Church</th><th>Group</th><th class="num">Members</th>
+      <th class="num">Graduates</th><th>FS conversion</th><th class="num">Attendance</th></tr></thead><tbody>`;
+    all.forEach(c=>{
+      html += `<tr class="nohover"><td>${esc(c.name)}${c.own?' <span class="pill gold">Your church</span>':''}</td>
+        <td class="muted small">${esc(c.group)}</td><td class="num">${c.members}</td><td class="num">${c.grads}</td>
+        <td><div class="row" style="gap:8px"><div class="bar ${c.fsRate>=50?'green':c.fsRate>=30?'':'red'}" style="width:80px">
+        <span style="width:${c.fsRate}%"></span></div><span class="mono small">${c.fsRate}%</span></div></td>
+        <td class="num">${c.attend}%</td></tr>`;
+    });
+    html += `</tbody></table></div></div>`;
+  }
+
+  /* Growth over the last 12 months */
+  const months = last12Months();
+  const joins = months.map(mo => ({ l:mo.l, v: ms.filter(m=>monthKey(m.joined)===mo.key).length }));
+  const gradsByMonth = months.map(mo => ({ l:mo.l, v: ms.filter(m=>m.fs.graduated && monthKey(m.fs.graduated)===mo.key).length }));
+
+  html += `<div class="grid g2" style="margin-bottom:16px">
+    <div class="card"><div class="card-h"><h3>New members each month</h3></div>${lineChart(joins,{label:'New members per month'})}</div>
+    <div class="card"><div class="card-h"><h3>Foundation School graduations</h3>
+      <span class="hint">Graduation holds every quarter</span></div>
+      ${lineChart(gradsByMonth,{color:'var(--green)',label:'Graduations per month'})}</div>
+  </div>`;
+
+  /* Attention list — the early warning the proposal promises */
+  html += `<div class="grid g2">
+    <div class="card"><div class="card-h"><h3>Needs a visit</h3>
+      <span class="hint">${atRisk.length} people</span></div>`;
+  if(!atRisk.length){
+    html += `<div class="empty"><div class="big">✓</div><p>Everyone has been seen in the last fortnight.</p></div>`;
+  } else {
+    html += `<div class="tbl-wrap"><table><tbody>`;
+    atRisk.slice(0,7).forEach(m=>{
+      const w = missedRun(m);
+      html += `<tr onclick="go('member','${m.id}')"><td><div class="who-row">
+        <div class="avatar">${initials(m.name)}</div><div><div class="nm">${esc(m.name)}</div>
+        <div class="mt">${esc(cellById(m.cellId).name)}</div></div></div></td>
+        <td class="right"><span class="pill ${w>=4?'red':'orange'}">${w>=99?'Never checked in':w+' weeks away'}</span></td></tr>`;
+    });
+    html += `</tbody></table></div>
+      <div class="note" style="margin-top:12px">Missing two or more meetings sends the cell leader a KingsChat notification.</div>`;
+  }
+  html += `</div>`;
+
+  /* Foundation School pipeline */
+  html += `<div class="card"><div class="card-h"><h3>Where the current set has reached</h3>
+    <span class="hint">${inFS.length} students</span></div>`;
+  if(!inFS.length){
+    html += `<div class="empty"><div class="big">📖</div><p>No one is in Foundation School right now.</p>
+      <small>Enrol a first timer to start the next set.</small></div>`;
+  } else {
+    FS_CLASSES.forEach((c,i)=>{
+      const at = inFS.filter(m=>classesDone(m)===i+1).length;
+      const pct = Math.round(at/inFS.length*100);
+      html += `<div class="row" style="margin-bottom:9px"><div style="width:148px" class="small">${c.no} · ${esc(c.title)}</div>
+        <div class="bar" style="flex:1"><span style="width:${pct}%"></span></div>
+        <div class="mono small" style="width:26px;text-align:right">${at}</div></div>`;
+    });
+  }
+  html += `</div></div>`;
+  return html;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Members
+   ══════════════════════════════════════════════════════════════ */
+function viewMembers(){
+  const q = STATE.search.toLowerCase();
+  let ms = scopeMembers();
+  if(q) ms = ms.filter(m => m.name.toLowerCase().includes(q) ||
+    cellById(m.cellId).name.toLowerCase().includes(q) || fsStatus(m).toLowerCase().includes(q));
+  const f = STATE.tab || 'all';
+  if(f==='fs')     ms = ms.filter(m=>m.fs.enrolled && !m.fs.graduated);
+  if(f==='grad')   ms = ms.filter(m=>m.fs.graduated);
+  if(f==='new')    ms = ms.filter(m=>!m.fs.enrolled && !m.fs.graduated);
+  if(f==='risk')   ms = ms.filter(m=>missedRun(m)>=2);
+  if(f==='transfer') ms = ms.filter(m=>m.transfer);
+  ms = ms.slice().sort((a,b)=>a.name.localeCompare(b.name));
+
+  const all = scopeMembers();
+  const counts = {
+    all: all.length,
+    new: all.filter(m=>!m.fs.enrolled&&!m.fs.graduated).length,
+    fs: all.filter(m=>m.fs.enrolled&&!m.fs.graduated).length,
+    grad: all.filter(m=>m.fs.graduated).length,
+    risk: all.filter(m=>missedRun(m)>=2).length,
+    transfer: all.filter(m=>m.transfer).length
+  };
+
+  let html = `<div class="tabs">
+    ${[['all','Everyone'],['new','First timers'],['fs','In Foundation School'],['grad','Graduates'],['risk','Needs a visit'],['transfer','Transfers']]
+      .map(([k,l])=>`<button class="tab ${f===k?'on':''}" onclick="setTab('${k}')">${l} <span class="muted">${counts[k]}</span></button>`).join('')}
+  </div>`;
+
+  if(!ms.length) return html + `<div class="empty"><div class="big">🔍</div><p>No one matches that.</p>
+    <small>Try a different name, cell or status.</small></div>`;
+
+  html += `<div class="card" style="padding:6px"><div class="tbl-wrap"><table><thead><tr>
+    <th>Name</th><th>Cell</th><th>Foundation School</th><th>Attendance</th>
+    <th>Serving in</th><th class="num">Souls won</th><th class="num">Joined</th></tr></thead><tbody>`;
+  ms.forEach(m=>{
+    const ar = attendanceRate(m);
+    html += `<tr onclick="go('member','${m.id}')">
+      <td><div class="who-row"><div class="avatar">${initials(m.name)}</div>
+        <div><div class="nm">${esc(m.name)}</div>
+        <div class="mt">${m.leadership?esc(m.leadership):esc(m.gender==='F'?'Sister':'Brother')}${m.fsTeacher?' · FS teacher':''}</div></div></div></td>
+      <td class="small">${esc(cellById(m.cellId).name)}</td>
+      <td>${fsPill(m)}</td>
+      <td><div class="row" style="gap:8px"><div class="bar ${ar>=70?'green':ar>=45?'':'red'}" style="width:56px">
+        <span style="width:${ar}%"></span></div><span class="mono small">${ar}%</span></div></td>
+      <td class="small muted">${m.depts.length?m.depts.map(d=>esc(deptById(d).name)).join(', '):'—'}</td>
+      <td class="num">${m.souls||'—'}</td>
+      <td class="num small muted">${fmtShort(m.joined)}</td></tr>`;
+  });
+  html += `</tbody></table></div></div>`;
+  return html;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Member profile — the pastor's trend view
+   ══════════════════════════════════════════════════════════════ */
+function viewMember(){
+  const m = byId(STATE.memberId);
+  if(!m) return `<div class="empty"><p>That member record is not here.</p></div>`;
+  const g = grade(m);
+  const months = last12Months();
+
+  let html = STATE.role==='member' ? '' :
+    `<button class="breadcrumb" onclick="go('members')">← Back to members</button>`;
+
+  /* Header */
+  html += `<div class="card" style="margin-bottom:16px"><div class="row" style="gap:16px">
+    <div class="avatar lg">${initials(m.name)}</div>
+    <div style="flex:1;min-width:180px">
+      <div style="font-family:var(--serif);font-size:24px;font-weight:600">${esc(m.name)}</div>
+      <div class="small muted" style="margin-top:3px">${esc(cellById(m.cellId).name)} · joined ${fmtDate(m.joined)} · ${esc(m.entry)}</div>
+      <div class="chip-row" style="margin-top:9px">
+        ${fsPill(m)}
+        ${m.leadership?`<span class="pill purple">${esc(m.leadership)}</span>`:''}
+        ${m.fsTeacher?`<span class="pill gold">FS teacher badge</span>`:''}
+        ${m.depts.map(d=>`<span class="pill blue">${esc(deptById(d).name)}</span>`).join('')}
+      </div>
+    </div>
+    <div style="text-align:center">
+      <div class="small muted" style="margin-bottom:6px">Check-in code</div>
+      ${qrSvg(m.id)}
+    </div>
+  </div>`;
+
+  if(m.transfer){
+    const st = m.transfer.status;
+    html += `<div class="note ${st==='Verified'?'green':st==='Rejected'?'red':''}" style="margin-top:14px">
+      <strong>Transfer from ${esc(m.transfer.from)}.</strong> Certificate ${esc(m.transfer.certNo)} — ${esc(st.toLowerCase())}.
+      ${st==='Verified'?'Foundation School is not repeated; placed straight into a cell.'
+        :st==='Pending'?'Waiting on the sending branch. Cannot be given a leadership role until this clears.'
+        :'The sending branch could not confirm this certificate. Enrol in Foundation School.'}</div>`;
+  }
+  html += `</div>`;
+
+  /* Five trends */
+  const attMonths = months.map(mo=>{
+    const hits = m.attendance.filter(a=>monthKey(a.date)===mo.key &&
+      (a.type==='Cell meeting'||a.type==='Sunday service')).length;
+    return { l:mo.l, v: Math.min(100, Math.round(hits/8*100)) };
+  });
+  html += `<div class="grid g2" style="margin-bottom:16px">
+    <div class="card"><div class="card-h"><h3>Attendance</h3>
+      <span class="hint">${attendanceRate(m)}% over 12 weeks</span></div>
+      ${lineChart(attMonths,{max:100,unit:'%',color:'var(--blue)',label:'Attendance by month'})}
+      ${m.drifting?`<div class="note red" style="margin-top:12px">Attendance is falling month on month. Last seen ${fmtDate(lastSeen(m))}.</div>`:''}
+    </div>`;
+
+  if(canSeeMoney()){
+    const series = [
+      {id:'tithe',label:'Tithe',color:'var(--gold)'},
+      {id:'partnership',label:'Partnership',color:'var(--purple)'},
+      {id:'freewill',label:'Freewill',color:'var(--green)'},
+      {id:'firstfruits',label:'First fruits',color:'var(--blue)'},
+      {id:'seed',label:'Seed',color:'var(--orange)'},
+      {id:'service',label:'Service',color:'var(--text3)'}
+    ];
+    const groups = months.map(mo=>{
+      const v = {};
+      series.forEach(s => v[s.id] = m.giving.filter(x=>x.type===s.id && monthKey(x.date)===mo.key)
+        .reduce((a,b)=>a+b.amount,0));
+      return { l:mo.l, v };
+    });
+    html += `<div class="card"><div class="card-h"><h3>Giving</h3>
+      <span class="hint">${money(totalGiven(m))} in 12 months</span></div>
+      ${m.giving.length?barChart(groups,series,{money:true,label:'Giving by month'})
+        :`<div class="empty"><div class="big">—</div><p>No giving recorded yet.</p>
+          <small>Giving is taught in Class 5.</small></div>`}
+      <div class="legend-row">${series.map(s=>`<span><b style="background:${s.color}"></b>${s.label}</span>`).join('')}</div>
+    </div>`;
+  } else {
+    html += `<div class="card"><div class="card-h"><h3>Giving</h3></div>
+      <div class="locked">Giving records are visible to the Finance Officer and the Pastor only.</div></div>`;
+  }
+  html += `</div>`;
+
+  /* Foundation School progress */
+  html += `<div class="card" style="margin-bottom:16px"><div class="card-h"><h3>Foundation School</h3>
+    <span class="hint">${m.fs.enrolled?'Enrolled '+fmtDate(m.fs.enrolled):'Not enrolled'}</span></div>`;
+
+  if(m.fs.transferred){
+    html += `<div class="note green">Graduated at ${esc(m.transfer.from)} on ${fmtDate(m.fs.graduated)}. Certificate ${esc(m.fs.certNo)}. A graduate of the Foundation School is a graduate for life.</div>`;
+  } else if(!m.fs.enrolled){
+    html += `<div class="empty"><div class="big">📖</div><p>Not yet in Foundation School.</p>
+      <small>Every first timer and new member is eligible.</small>
+      ${canEditFS()?`<div style="margin-top:14px"><button class="btn primary" onclick="enrol('${m.id}')">Enrol in the next set</button></div>`:''}</div>`;
+  } else {
+    html += `<div class="fsgrid" style="margin-bottom:16px">`;
+    FS_CLASSES.forEach(c=>{
+      const r = m.fs.classes[c.id];
+      const cls = !r ? '' : (r.attended && r.assignment) ? 'done' : 'part';
+      html += `<div class="fscell ${cls}" onclick="openClass('${m.id}','${c.id}')" role="button" tabindex="0"
+        onkeydown="if(event.key==='Enter')openClass('${m.id}','${c.id}')">
+        <div class="cno">${c.no}</div><div class="cnm">${esc(c.title)}</div>
+        <div class="cst">
+          <span class="tick ${r&&r.attended?'y':'n'}">${r&&r.attended?'✓':'○'} class</span>
+          <span class="tick ${r&&r.assignment?'y':'n'}">${r&&r.assignment?'✓':'○'} work</span>
+        </div></div>`;
+    });
+    html += `</div>`;
+
+    html += `<div class="grid g3" style="margin-bottom:14px">
+      <div class="card" style="background:var(--surface2);text-align:center">
+        <div class="small muted">Section A — attendance</div>
+        <div class="kpi-val" style="font-size:24px">${g.secA.toFixed(1)}<span class="muted" style="font-size:14px"> / 30</span></div>
+        <div class="small muted">${g.a} of 7 classes</div></div>
+      <div class="card" style="background:var(--surface2);text-align:center">
+        <div class="small muted">Section B — assignments</div>
+        <div class="kpi-val" style="font-size:24px">${g.secB.toFixed(1)}<span class="muted" style="font-size:14px"> / 30</span></div>
+        <div class="small muted">${g.b} of 7 submitted</div></div>
+      <div class="card" style="background:var(--surface2);text-align:center">
+        <div class="small muted">Section C — examination</div>
+        <div class="kpi-val" style="font-size:24px">${g.secC===null?'—':g.secC.toFixed(1)}<span class="muted" style="font-size:14px"> / 40</span></div>
+        <div class="small muted">${g.raw===null?'Not yet sat':'Raw score '+g.raw+'%'}</div></div>
+    </div>`;
+
+    html += `<div class="row" style="gap:14px;align-items:center">
+      ${ring(Math.round(g.total), 'Overall score', g.total>=60?'var(--green)':'var(--gold)')}
+      <div style="flex:1;min-width:200px">
+        <div style="font-weight:600;margin-bottom:4px">${g.total.toFixed(1)} out of 100</div>`;
+    if(m.fs.graduated){
+      html += `<div class="small muted">Graduated ${fmtDate(m.fs.graduated)}. Certificate ${esc(m.fs.certNo)}.</div>`;
+    } else if(g.raw !== null && !g.passed){
+      html += `<div class="small" style="color:var(--red)">Below 50% in the examination. Retakes several classes and is withdrawn from this graduation, scheduled for the next set.</div>`;
+    } else if(g.raw !== null){
+      html += `<div class="small" style="color:var(--green)">Passed. ${g.needsMakeup?'A makeup class is due before graduation day so the missed answers are discussed.':'Full marks — no makeup needed.'}</div>`;
+    } else if(g.eligible){
+      html += `<div class="small" style="color:var(--green)">All classes attended and all assignments in. Ready to sit the examination.</div>`;
+    } else {
+      html += `<div class="small" style="color:var(--orange)">Gaps must be closed before the examination: ${7-g.a} class${7-g.a===1?'':'es'} missed, ${7-g.b} assignment${7-g.b===1?'':'s'} outstanding.</div>`;
+    }
+    html += `</div>`;
+    if(canEditFS() && !m.fs.graduated){
+      html += `<div class="row">
+        <button class="btn ${g.eligible?'primary':''}" onclick="openExam('${m.id}')" ${g.raw!==null?'':''}>
+          ${g.raw===null?'Record examination score':'Change examination score'}</button>
+        ${g.passed?`<button class="btn primary" onclick="graduate('${m.id}')">Graduate and issue certificate</button>`:''}</div>`;
+    }
+    html += `</div>`;
+  }
+
+  /* Post-graduation assessment */
+  if(m.fs.postgrad && m.fs.postgrad.length){
+    html += `<div style="margin-top:16px" class="note green"><strong>Post-graduation assessment.</strong>
+      Month ${m.fs.postgrad.length} of ${POSTGRAD_MONTHS}.
+      ${m.fs.postgrad.map(p=>`Month ${p.month}: ${esc(p.cellRole)}${p.deptRole!=='—'?', '+esc(p.deptRole):''}, ${p.converts} new convert${p.converts===1?'':'s'} brought in.`).join(' ')}</div>`;
+  }
+  html += `</div>`;
+
+  /* Attendance + service */
+  html += `<div class="grid g2">
+    <div class="card"><div class="card-h"><h3>Check-in history</h3>
+      <span class="hint">Last 26 weeks</span></div><div class="hm">`;
+  for(let w=25;w>=0;w--){
+    const from = iso(day(-(w+1)*7)), to = iso(day(-w*7));
+    const n = m.attendance.filter(a=>a.date>from && a.date<=to).length;
+    html += `<i data-v="${n===0?'x':Math.min(n,3)}" title="Week of ${fmtShort(from)}: ${n} check-in${n===1?'':'s'}"></i>`;
+  }
+  html += `</div><div class="legend-row"><span>Each square is a week. Red means no check-in at all.</span></div>
+    <div class="tbl-wrap" style="margin-top:14px"><table><thead><tr><th>Recent check-ins</th><th class="right">When</th></tr></thead><tbody>`;
+  m.attendance.slice().sort((a,b)=>b.date.localeCompare(a.date)).slice(0,6).forEach(a=>{
+    html += `<tr class="nohover"><td class="small">${esc(a.type)}</td><td class="right small muted">${fmtDate(a.date)}</td></tr>`;
+  });
+  if(!m.attendance.length) html += `<tr class="nohover"><td colspan="2" class="muted small">Never checked in.</td></tr>`;
+  html += `</tbody></table></div></div>`;
+
+  html += `<div class="card"><div class="card-h"><h3>Soul winning and service</h3></div>
+    <div class="grid g2" style="margin-bottom:14px">
+      <div class="kpi green" style="padding:13px"><div class="kpi-label">Souls won</div>
+        <div class="kpi-val" style="font-size:25px">${m.souls}</div>
+        <div class="kpi-note">Synced from SoulTracker</div></div>
+      <div class="kpi blue" style="padding:13px"><div class="kpi-label">Now in Foundation School</div>
+        <div class="kpi-val" style="font-size:25px">${Math.round(m.souls*.6)}</div>
+        <div class="kpi-note">A soul saved becomes a soul won at graduation</div></div>
+    </div>
+    <div class="tbl-wrap"><table><tbody>
+      <tr class="nohover"><td class="small muted">Departments</td><td class="right small">${m.depts.length?m.depts.map(d=>esc(deptById(d).name)).join(', '):'Not serving yet'}</td></tr>
+      <tr class="nohover"><td class="small muted">Leadership</td><td class="right small">${m.leadership?esc(m.leadership):'None held'}</td></tr>
+      <tr class="nohover"><td class="small muted">FS teacher badge</td><td class="right small">${m.fsTeacher?'Renewed '+fmtDate(m.badgeRenewed):'—'}</td></tr>
+      <tr class="nohover"><td class="small muted">Phone</td><td class="right small mono">${esc(m.phone)}</td></tr>
+    </tbody></table></div></div></div>`;
+
+  /* Giving ledger */
+  if(canSeeMoney() && m.giving.length){
+    html += `<div class="card" style="margin-top:16px"><div class="card-h"><h3>Giving record</h3>
+      ${canEditMoney()?`<button class="btn sm primary" onclick="openGiving('${m.id}')">Record giving</button>`:''}
+      <span class="hint">${m.tither?'Tithe-faithful':'Tithe is irregular'}</span></div>
+      <div class="grid g3" style="margin-bottom:14px">`;
+    GIVING_TYPES.forEach(t=>{
+      const v = totalGiven(m,t.id);
+      html += `<div style="background:var(--surface2);border-radius:9px;padding:11px">
+        <div class="small muted">${esc(t.label)}</div>
+        <div style="font-weight:600;font-size:17px;margin:2px 0" class="mono">${money(v)}</div>
+        <div class="small muted" style="font-size:10.5px">${esc(t.flow)}</div></div>`;
+    });
+    html += `</div><div class="tbl-wrap"><table><thead><tr><th>Date</th><th>Type</th><th class="num">Amount</th></tr></thead><tbody>`;
+    m.giving.slice().sort((a,b)=>b.date.localeCompare(a.date)).slice(0,8).forEach(gv=>{
+      html += `<tr class="nohover"><td class="small muted">${fmtDate(gv.date)}</td>
+        <td class="small">${esc(GIVING_TYPES.find(t=>t.id===gv.type).label)}</td>
+        <td class="num mono">${money(gv.amount)}</td></tr>`;
+    });
+    html += `</tbody></table></div></div>`;
+  }
+  return html;
+}
+
+/* A deterministic pseudo-QR block so the code looks like the member's own */
+function qrSvg(seed){
+  let h = 0; for(const ch of seed) h = (h*31 + ch.charCodeAt(0)) >>> 0;
+  const N = 11, cells = [];
+  for(let y=0;y<N;y++) for(let x=0;x<N;x++){
+    h = (h*1103515245 + 12345) >>> 0;
+    const finder = (x<3&&y<3)||(x>N-4&&y<3)||(x<3&&y>N-4);
+    const on = finder ? ((x===0||x===2||y===0||y===2||(x===1&&y===1))) : (h % 100) < 46;
+    if(on) cells.push(`<rect x="${x}" y="${y}" width="1" height="1"/>`);
+  }
+  return `<svg viewBox="-1 -1 ${N+2} ${N+2}" style="width:74px;height:74px;background:#e8e4dc;border-radius:7px;padding:3px"
+    role="img" aria-label="Personal check-in code"><g fill="#0a0f1e">${cells.join('')}</g></svg>`;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Foundation School
+   ══════════════════════════════════════════════════════════════ */
+function viewFS(){
+  const ms = scopeMembers();
+  const students = ms.filter(m=>m.fs.enrolled && !m.fs.graduated);
+  const grads = ms.filter(m=>m.fs.graduated && !m.fs.transferred);
+  const waiting = ms.filter(m=>!m.fs.enrolled && !m.fs.graduated);
+  const ready = students.filter(m=>grade(m).eligible && !m.fs.exam);
+  const passed = students.filter(m=>grade(m).passed);
+  const tab = STATE.tab || 'set';
+
+  let html = `<div class="grid g4" style="margin-bottom:16px">
+    <div class="kpi blue"><div class="kpi-label">Current set</div><div class="kpi-val">${students.length}</div>
+      <div class="kpi-note">Running over 7 weeks</div></div>
+    <div class="kpi gold"><div class="kpi-label">Ready to sit the exam</div><div class="kpi-val">${ready.length}</div>
+      <div class="kpi-note">All classes and assignments complete</div></div>
+    <div class="kpi green"><div class="kpi-label">Passed, awaiting graduation</div><div class="kpi-val">${passed.length}</div>
+      <div class="kpi-note">Graduation holds each quarter</div></div>
+    <div class="kpi purple"><div class="kpi-label">Not yet enrolled</div><div class="kpi-val">${waiting.length}</div>
+      <div class="kpi-note">Every first timer is eligible</div></div>
+  </div>`;
+
+  html += `<div class="tabs">
+    ${[['set','Current set'],['curriculum','Curriculum'],['exam','Examinations'],['grads','Graduates'],['waiting','Not enrolled']]
+      .map(([k,l])=>`<button class="tab ${tab===k?'on':''}" onclick="setTab('${k}')">${l}</button>`).join('')}
+  </div>`;
+
+  if(tab === 'set'){
+    if(!students.length) return html + `<div class="empty"><div class="big">📖</div>
+      <p>No set is running.</p><small>Enrol first timers to open the next set.</small></div>`;
+    html += `<div class="card" style="padding:6px"><div class="tbl-wrap"><table><thead><tr><th>Student</th>
+      ${FS_CLASSES.map(c=>`<th style="text-align:center" title="${esc(c.title)}">${c.no.replace('Class ','')}</th>`).join('')}
+      <th class="num">Section A</th><th class="num">Section B</th><th>Status</th></tr></thead><tbody>`;
+    students.sort((a,b)=>classesDone(b)-classesDone(a)).forEach(m=>{
+      const g = grade(m);
+      html += `<tr onclick="go('member','${m.id}')"><td><div class="who-row">
+        <div class="avatar">${initials(m.name)}</div><div><div class="nm">${esc(m.name)}</div>
+        <div class="mt">${esc(cellById(m.cellId).name)}</div></div></div></td>`;
+      FS_CLASSES.forEach(c=>{
+        const r = m.fs.classes[c.id];
+        const mark = !r ? '<span class="muted">·</span>'
+          : r.attended && r.assignment ? '<span style="color:var(--green)">●</span>'
+          : r.attended ? '<span style="color:var(--orange)">◐</span>'
+          : '<span style="color:var(--red)">○</span>';
+        html += `<td style="text-align:center">${mark}</td>`;
+      });
+      html += `<td class="num mono small">${g.secA.toFixed(0)}</td><td class="num mono small">${g.secB.toFixed(0)}</td>
+        <td>${g.passed?'<span class="pill green">Passed</span>'
+          :g.raw!==null?'<span class="pill red">Re-sit</span>'
+          :g.eligible?'<span class="pill gold">Exam ready</span>'
+          :'<span class="pill grey">In progress</span>'}</td></tr>`;
+    });
+    html += `</tbody></table></div></div>
+      <div class="legend-row" style="padding:0 6px">
+        <span><span style="color:var(--green)">●</span> class attended, assignment in</span>
+        <span><span style="color:var(--orange)">◐</span> attended, assignment outstanding</span>
+        <span><span style="color:var(--red)">○</span> class missed</span>
+        <span><span class="muted">·</span> not reached</span></div>
+      <div class="note" style="margin-top:14px">Assignments must be completed before a student advances. If one is outstanding, the student tarries in that class — uncompleted work should never accumulate.</div>`;
+  }
+
+  if(tab === 'curriculum'){
+    html += `<div class="stack">`;
+    FS_CLASSES.forEach(c=>{
+      const at = students.filter(m=>m.fs.classes[c.id] && m.fs.classes[c.id].attended).length;
+      html += `<div class="card"><div class="card-h">
+        <span class="pill gold">${c.no}</span>
+        <h3 style="font-family:var(--serif);font-size:18px">${esc(c.title)}</h3>
+        <span class="hint">${at} of ${students.length||0} in the current set have taken it</span></div>
+        <p style="margin:0 0 11px;color:var(--text2);font-size:13.5px;max-width:74ch">${esc(c.aim)}</p>
+        <div class="small muted" style="margin-bottom:10px">${esc(c.scripture)}</div>
+        <div class="note"><strong>Take-home assignment.</strong> ${esc(c.assignment)}</div></div>`;
+    });
+    html += `<div class="note">A class runs no longer than an hour and a half, is interactive, and carries at least one interval. A student arriving more than fifteen minutes late retakes the class or stays on for the portion missed.</div></div>`;
+  }
+
+  if(tab === 'exam'){
+    html += `<div class="grid g2" style="margin-bottom:16px">
+      <div class="card"><div class="card-h"><h3>How the mark is made up</h3></div>
+        <div class="stack" style="gap:10px">
+          ${[['Section A','Class attendance and participation',30,'var(--blue)'],
+             ['Section B','Completion and submission of assignments',30,'var(--purple)'],
+             ['Section C','Examination questions',40,'var(--gold)']]
+            .map(([s,d,w,c])=>`<div class="row"><div class="small" style="width:78px;font-weight:600">${s}</div>
+              <div style="flex:1"><div class="small">${d}</div>
+              <div class="bar" style="margin-top:5px"><span style="width:${w}%;background:${c}"></span></div></div>
+              <div class="mono" style="width:38px;text-align:right">${w}%</div></div>`).join('')}
+        </div>
+        <div class="note" style="margin-top:14px">A student presented for the final examination should already be at sixty. Anything under 50% in Section C means retaking several classes and waiting for the next set. Between 50 and 100, a makeup class runs before graduation day so the missed answers are discussed and the understanding is settled for life.</div>
+      </div>
+      <div class="card"><div class="card-h"><h3>Examination sitting</h3>
+        <span class="hint">${ready.length} ready</span></div>`;
+    if(!ready.length && !students.filter(m=>m.fs.exam).length){
+      html += `<div class="empty"><div class="big">📝</div><p>Nobody is ready to sit yet.</p>
+        <small>All seven classes and all assignments must be in first.</small></div>`;
+    } else {
+      html += `<div class="tbl-wrap"><table><thead><tr><th>Student</th><th class="num">Section C</th><th class="num">Total</th><th></th></tr></thead><tbody>`;
+      students.filter(m=>grade(m).eligible || m.fs.exam).forEach(m=>{
+        const g = grade(m);
+        html += `<tr class="nohover"><td class="small">${esc(m.name)}</td>
+          <td class="num mono">${g.raw===null?'—':g.raw+'%'}</td>
+          <td class="num mono">${g.total.toFixed(0)}</td>
+          <td class="right">${canEditFS()
+            ? (g.passed?`<button class="btn sm primary" onclick="graduate('${m.id}')">Graduate</button>`
+              :`<button class="btn sm" onclick="openExam('${m.id}')">${g.raw===null?'Enter score':'Re-sit'}</button>`)
+            : ''}</td></tr>`;
+      });
+      html += `</tbody></table></div>`;
+    }
+    html += `</div></div>`;
+  }
+
+  if(tab === 'grads'){
+    const transfers = ms.filter(m=>m.fs.transferred);
+    if(!grads.length && !transfers.length) return html + `<div class="empty"><div class="big">🎓</div>
+      <p>No graduates yet.</p><small>The first set will graduate at the end of the quarter.</small></div>`;
+    html += `<div class="card" style="padding:6px"><div class="tbl-wrap"><table><thead><tr>
+      <th>Graduate</th><th>Graduated</th><th>Certificate</th><th class="num">Final mark</th>
+      <th>Post-graduation</th><th>Now serving as</th></tr></thead><tbody>`;
+    grads.slice().sort((a,b)=>b.fs.graduated.localeCompare(a.fs.graduated)).forEach(m=>{
+      const g = grade(m);
+      const pg = m.fs.postgrad.length;
+      html += `<tr onclick="go('member','${m.id}')"><td><div class="who-row">
+        <div class="avatar">${initials(m.name)}</div><div class="nm">${esc(m.name)}</div></div></td>
+        <td class="small muted">${fmtDate(m.fs.graduated)}</td>
+        <td class="small mono">${esc(m.fs.certNo||'—')}</td>
+        <td class="num mono">${g.total.toFixed(0)}</td>
+        <td>${pg>=POSTGRAD_MONTHS?'<span class="pill green">Complete</span>'
+          :pg?`<span class="pill blue">Month ${pg} of 3</span>`:'<span class="pill grey">Starts next month</span>'}</td>
+        <td class="small muted">${m.leadership?esc(m.leadership):m.depts.length?esc(deptById(m.depts[0]).name):'Cell member'}</td></tr>`;
+    });
+    html += `</tbody></table></div></div>`;
+    const leaders = grads.filter(m=>m.leadership).length;
+    const serving = grads.filter(m=>m.depts.length).length;
+    html += `<div class="note green" style="margin-top:14px"><strong>For the principal's graduation speech.</strong>
+      ${grads.length} have graduated here. ${leaders} now hold leadership roles and ${serving} serve in a department.
+      Between them they have brought in ${grads.reduce((s,m)=>s+m.souls,0)} new converts since graduating.</div>`;
+    if(transfers.length){
+      html += `<div class="card" style="margin-top:16px"><div class="card-h"><h3>Graduates who transferred in</h3>
+        <span class="hint">A graduate of the Foundation School is a graduate for life</span></div>
+        <div class="tbl-wrap"><table><thead><tr><th>Name</th><th>Sending branch</th><th>Certificate</th><th>Verification</th></tr></thead><tbody>`;
+      transfers.forEach(m=>{
+        const st = m.transfer.status;
+        html += `<tr onclick="go('member','${m.id}')"><td class="small">${esc(m.name)}</td>
+          <td class="small muted">${esc(m.transfer.from)}</td><td class="small mono">${esc(m.transfer.certNo)}</td>
+          <td><span class="pill ${st==='Verified'?'green':st==='Pending'?'orange':'red'}">${esc(st)}</span></td></tr>`;
+      });
+      html += `</tbody></table></div></div>`;
+    }
+  }
+
+  if(tab === 'waiting'){
+    if(!waiting.length) return html + `<div class="empty"><div class="big">✓</div>
+      <p>Every member is enrolled or has graduated.</p><small>That is one-to-one conversion of first timers.</small></div>`;
+    html += `<div class="note" style="margin-bottom:14px">The goal is one-to-one conversion of every viable first timer into a graduate. Until a soul saved graduates, it is not yet a soul won.</div>
+      <div class="card" style="padding:6px"><div class="tbl-wrap"><table><thead><tr>
+      <th>Name</th><th>Cell</th><th>How they came in</th><th class="num">With us</th><th></th></tr></thead><tbody>`;
+    waiting.slice().sort((a,b)=>a.joined.localeCompare(b.joined)).forEach(m=>{
+      const wks = Math.round((TODAY-new Date(m.joined+'T00:00:00'))/604800000);
+      html += `<tr onclick="go('member','${m.id}')"><td><div class="who-row">
+        <div class="avatar">${initials(m.name)}</div><div class="nm">${esc(m.name)}</div></div></td>
+        <td class="small muted">${esc(cellById(m.cellId).name)}</td>
+        <td class="small muted">${esc(m.entry)}</td>
+        <td class="num small ${wks>12?'':'muted'}" ${wks>12?'style="color:var(--orange)"':''}>${wks} weeks</td>
+        <td class="right">${canEditFS()?`<button class="btn sm primary" onclick="event.stopPropagation();enrol('${m.id}')">Enrol</button>`:''}</td></tr>`;
+    });
+    html += `</tbody></table></div></div>`;
+  }
+  return html;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Attendance
+   ══════════════════════════════════════════════════════════════ */
+function viewAttendance(){
+  const ms = scopeMembers();
+  const tab = STATE.tab || 'checkin';
+  const types = ['Cell meeting','Sunday service','Midweek service','Foundation School'];
+
+  let html = `<div class="tabs">
+    ${[['checkin','Check in'],['register','Register'],['pattern','Patterns']]
+      .map(([k,l])=>`<button class="tab ${tab===k?'on':''}" onclick="setTab('${k}')">${l}</button>`).join('')}
+  </div>`;
+
+  if(tab === 'checkin'){
+    const today = iso(TODAY);
+    const here = ms.filter(m=>m.attendance.some(a=>a.date===today));
+    html += `<div class="grid g2" style="margin-bottom:16px">
+      <div class="card"><div class="card-h"><h3>Scan a member in</h3>
+        <span class="hint">Works without a signal — syncs later</span></div>
+        <div class="field"><label>Meeting</label>
+          <select id="att-type">${types.map(t=>`<option>${t}</option>`).join('')}</select></div>
+        <div class="field"><label>Member</label>
+          <select id="att-who"><option value="">Pick a member or scan their code</option>
+          ${ms.slice().sort((a,b)=>a.name.localeCompare(b.name))
+            .map(m=>`<option value="${m.id}">${esc(m.name)} — ${esc(cellById(m.cellId).name)}</option>`).join('')}</select></div>
+        <button class="btn primary" onclick="checkIn()">Check in</button>
+        <div class="note" style="margin-top:14px">A member shows the code from their phone, the leader scans it, and the record lands on the profile straight away.</div>
+      </div>
+      <div class="card"><div class="card-h"><h3>Checked in today</h3><span class="hint">${here.length} so far</span></div>`;
+    if(!here.length){
+      html += `<div class="empty"><div class="big">📷</div><p>Nobody has checked in yet today.</p>
+        <small>Scan the first person to open the register.</small></div>`;
+    } else {
+      html += `<div class="tbl-wrap"><table><tbody>`;
+      here.slice().reverse().forEach(m=>{
+        const a = m.attendance.filter(x=>x.date===today).slice(-1)[0];
+        html += `<tr onclick="go('member','${m.id}')"><td><div class="who-row">
+          <div class="avatar">${initials(m.name)}</div><div><div class="nm">${esc(m.name)}</div>
+          <div class="mt">${esc(cellById(m.cellId).name)}</div></div></div></td>
+          <td class="right"><span class="pill green">${esc(a.type)}</span></td></tr>`;
+      });
+      html += `</tbody></table></div>`;
+    }
+    html += `</div></div>`;
+  }
+
+  if(tab === 'register'){
+    const weeks = [];
+    for(let w=0;w<12;w++) weeks.push({ from: iso(day(-(w+1)*7)), to: iso(day(-w*7)) });
+    html += `<div class="card" style="padding:6px"><div class="tbl-wrap"><table><thead><tr><th>Member</th>
+      ${weeks.slice().reverse().map(w=>`<th style="text-align:center;font-size:10px">${fmtShort(w.from).split(' ')[0]}</th>`).join('')}
+      <th class="num">Rate</th></tr></thead><tbody>`;
+    ms.slice().sort((a,b)=>attendanceRate(a)-attendanceRate(b)).forEach(m=>{
+      html += `<tr onclick="go('member','${m.id}')"><td class="small">${esc(m.name)}</td>`;
+      weeks.slice().reverse().forEach(w=>{
+        const n = m.attendance.filter(a=>a.date>w.from && a.date<=w.to).length;
+        html += `<td style="text-align:center"><span style="color:${n?'var(--green)':'var(--text3)'}">${n?'●':'·'}</span></td>`;
+      });
+      const r = attendanceRate(m);
+      html += `<td class="num mono small" style="color:${r>=70?'var(--green)':r>=45?'var(--text)':'var(--red)'}">${r}%</td></tr>`;
+    });
+    html += `</tbody></table></div></div>`;
+  }
+
+  if(tab === 'pattern'){
+    const months = last12Months();
+    const series = types.map((t,i)=>({ id:t, label:t, color:['var(--blue)','var(--gold)','var(--purple)','var(--green)'][i] }));
+    const groups = months.map(mo=>{
+      const v = {};
+      types.forEach(t => v[t] = ms.reduce((s,m)=>s+m.attendance.filter(a=>a.type===t&&monthKey(a.date)===mo.key).length,0));
+      return { l:mo.l, v };
+    });
+    html += `<div class="card" style="margin-bottom:16px"><div class="card-h"><h3>Check-ins by meeting type</h3></div>
+      ${barChart(groups,series,{h:210,label:'Check-ins by meeting type'})}
+      <div class="legend-row">${series.map(s=>`<span><b style="background:${s.color}"></b>${s.label}</span>`).join('')}</div></div>`;
+
+    const drifting = ms.filter(m=>missedRun(m)>=2).sort((a,b)=>missedRun(b)-missedRun(a));
+    html += `<div class="card"><div class="card-h"><h3>Drifting</h3>
+      <span class="hint">Two or more meetings missed</span></div>`;
+    if(!drifting.length) html += `<div class="empty"><div class="big">✓</div><p>Nobody is drifting.</p></div>`;
+    else {
+      html += `<div class="tbl-wrap"><table><thead><tr><th>Member</th><th>Cell</th><th>Last seen</th>
+        <th>Foundation School</th><th class="num">Rate</th></tr></thead><tbody>`;
+      drifting.forEach(m=>{
+        html += `<tr onclick="go('member','${m.id}')"><td class="small">${esc(m.name)}</td>
+          <td class="small muted">${esc(cellById(m.cellId).name)}</td>
+          <td><span class="pill ${missedRun(m)>=4?'red':'orange'}">${lastSeen(m)?fmtDate(lastSeen(m)):'Never'}</span></td>
+          <td>${fsPill(m)}</td><td class="num mono small">${attendanceRate(m)}%</td></tr>`;
+      });
+      html += `</tbody></table></div>`;
+    }
+    html += `</div>`;
+  }
+  return html;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Giving
+   ══════════════════════════════════════════════════════════════ */
+function viewGiving(){
+  if(!canSeeMoney()) return `<div class="locked">Giving records are open to the Finance Officer and the Pastor. A cell leader may record a service offering for their own cell, and nothing more.</div>`;
+  const ms = scopeMembers();
+  const months = last12Months();
+  const thisMonth = monthKey(iso(TODAY));
+  const all = ms.flatMap(m => m.giving.map(g=>({...g, name:m.name, id:m.id})));
+  const mtd = all.filter(g=>monthKey(g.date)===thisMonth);
+  const tithers = ms.filter(m=>m.giving.some(g=>g.type==='tithe' && monthKey(g.date)===thisMonth));
+  const eligible = ms.filter(m=>m.fs.classes.c5 || m.fs.graduated);
+  const faithful = ms.filter(m=>{
+    const mk = new Set(m.giving.filter(g=>g.type==='tithe').map(g=>monthKey(g.date)));
+    return months.filter(mo=>mk.has(mo.key)).length >= 12;
+  });
+
+  let html = `<div class="grid g4" style="margin-bottom:16px">
+    <div class="kpi gold"><div class="kpi-label">Received this month</div>
+      <div class="kpi-val" style="font-size:25px">${money(mtd.reduce((s,g)=>s+g.amount,0))}</div>
+      <div class="kpi-note">${mtd.length} entries</div></div>
+    <div class="kpi green"><div class="kpi-label">Tithed this month</div><div class="kpi-val">${tithers.length}</div>
+      <div class="kpi-note">of ${eligible.length} taught in Class 5</div></div>
+    <div class="kpi blue"><div class="kpi-label">Tithe-faithful</div><div class="kpi-val">${faithful.length}</div>
+      <div class="kpi-note">Twelve months unbroken</div></div>
+    <div class="kpi purple"><div class="kpi-label">Partnership, 12 months</div>
+      <div class="kpi-val" style="font-size:25px">${money(all.filter(g=>g.type==='partnership').reduce((s,g)=>s+g.amount,0))}</div>
+      <div class="kpi-note">Flows church → zone → headquarters</div></div>
+  </div>`;
+
+  const series = GIVING_TYPES.map((t,i)=>({ id:t.id, label:t.label,
+    color:['var(--gold)','var(--blue)','var(--green)','var(--orange)','var(--text3)','var(--purple)'][i] }));
+  const groups = months.map(mo=>{
+    const v = {};
+    GIVING_TYPES.forEach(t => v[t.id] = all.filter(g=>g.type===t.id && monthKey(g.date)===mo.key).reduce((s,g)=>s+g.amount,0));
+    return { l:mo.l, v };
+  });
+
+  html += `<div class="card" style="margin-bottom:16px"><div class="card-h"><h3>Giving across the church</h3>
+    ${canEditMoney()?`<button class="btn sm primary" onclick="openGiving('')">Record giving</button>`:''}</div>
+    ${barChart(groups,series,{money:true,h:220,label:'Giving by month and type'})}
+    <div class="legend-row">${series.map(s=>`<span><b style="background:${s.color}"></b>${s.label}</span>`).join('')}</div></div>`;
+
+  html += `<div class="grid g2">
+    <div class="card"><div class="card-h"><h3>The six kinds of giving</h3></div>
+      <div class="tbl-wrap"><table><thead><tr><th>Type</th><th class="num">12 months</th><th>Where it goes</th></tr></thead><tbody>`;
+  GIVING_TYPES.forEach(t=>{
+    const v = all.filter(g=>g.type===t.id).reduce((s,g)=>s+g.amount,0);
+    html += `<tr class="nohover"><td><div style="font-weight:500">${esc(t.label)}</div>
+      <div class="small muted">${esc(t.note)}</div></td>
+      <td class="num mono">${money(v)}</td><td class="small muted">${esc(t.flow)}</td></tr>`;
+  });
+  html += `</tbody></table></div>
+    <div class="note" style="margin-top:14px">Only the Finance Officer, Treasurer or Pastor enters money. Cell leaders may record their own cell's service offering. Members read their record and never type into it.</div></div>`;
+
+  html += `<div class="card"><div class="card-h"><h3>Recent entries</h3><span class="hint">${all.length} in 12 months</span></div>
+    <div class="tbl-wrap"><table><thead><tr><th>Member</th><th>Type</th><th class="num">Amount</th><th class="num">Date</th></tr></thead><tbody>`;
+  all.sort((a,b)=>b.date.localeCompare(a.date)).slice(0,12).forEach(g=>{
+    html += `<tr onclick="go('member','${g.id}')"><td class="small">${esc(g.name)}</td>
+      <td class="small muted">${esc(GIVING_TYPES.find(t=>t.id===g.type).label)}</td>
+      <td class="num mono">${money(g.amount)}</td><td class="num small muted">${fmtShort(g.date)}</td></tr>`;
+  });
+  html += `</tbody></table></div></div></div>`;
+  return html;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Cells
+   ══════════════════════════════════════════════════════════════ */
+function viewCells(){
+  if(STATE.cellId){
+    const c = cellById(STATE.cellId);
+    const ms = STATE.members.filter(m=>m.cellId===c.id);
+    let h = `<button class="breadcrumb" onclick="go('cells')">← Back to cells</button>
+      <div class="card" style="margin-bottom:16px"><div class="row">
+      <div><div style="font-family:var(--serif);font-size:22px;font-weight:600">${esc(c.name)}</div>
+      <div class="small muted">${esc(c.area)} · led by ${esc(c.leaderName)}</div></div>
+      <div class="topbar-spacer"></div>
+      <div class="row" style="gap:20px">
+        <div style="text-align:center"><div class="kpi-val" style="font-size:22px">${ms.length}</div><div class="small muted">members</div></div>
+        <div style="text-align:center"><div class="kpi-val" style="font-size:22px">${ms.filter(m=>m.fs.graduated).length}</div><div class="small muted">graduates</div></div>
+        <div style="text-align:center"><div class="kpi-val" style="font-size:22px">${ms.length?Math.round(ms.reduce((s,m)=>s+attendanceRate(m),0)/ms.length):0}%</div><div class="small muted">attendance</div></div>
+      </div></div></div>`;
+    h += `<div class="card" style="padding:6px"><div class="tbl-wrap"><table><thead><tr>
+      <th>Member</th><th>Foundation School</th><th>Attendance</th><th>Last seen</th><th class="num">Souls</th></tr></thead><tbody>`;
+    ms.sort((a,b)=>a.name.localeCompare(b.name)).forEach(m=>{
+      const r = attendanceRate(m);
+      h += `<tr onclick="go('member','${m.id}')"><td><div class="who-row">
+        <div class="avatar">${initials(m.name)}</div><div><div class="nm">${esc(m.name)}</div>
+        <div class="mt">${m.leadership?esc(m.leadership):'&nbsp;'}</div></div></div></td>
+        <td>${fsPill(m)}</td>
+        <td><div class="row" style="gap:8px"><div class="bar ${r>=70?'green':r>=45?'':'red'}" style="width:56px">
+        <span style="width:${r}%"></span></div><span class="mono small">${r}%</span></div></td>
+        <td class="small muted">${lastSeen(m)?fmtDate(lastSeen(m)):'Never'}</td>
+        <td class="num">${m.souls||'—'}</td></tr>`;
+    });
+    h += `</tbody></table></div></div>`;
+    return h;
+  }
+
+  let html = `<div class="grid g-auto">`;
+  CELLS.forEach(c=>{
+    const ms = STATE.members.filter(m=>m.cellId===c.id);
+    const gr = ms.filter(m=>m.fs.graduated).length;
+    const att = ms.length?Math.round(ms.reduce((s,m)=>s+attendanceRate(m),0)/ms.length):0;
+    const risk = ms.filter(m=>missedRun(m)>=2).length;
+    const conv = ms.length?Math.round(gr/ms.length*100):0;
+    html += `<div class="card" style="cursor:pointer" onclick="go('cell','${c.id}')" role="button" tabindex="0"
+      onkeydown="if(event.key==='Enter')go('cell','${c.id}')">
+      <div class="card-h"><h3 style="font-family:var(--serif);font-size:17px">${esc(c.name)}</h3>
+        ${risk?`<span class="pill orange">${risk} drifting</span>`:'<span class="pill green">All present</span>'}</div>
+      <div class="small muted" style="margin-bottom:12px">${esc(c.area)} · ${esc(c.leaderName)}</div>
+      <div class="row" style="gap:18px;margin-bottom:12px">
+        <div><div style="font-size:21px;font-weight:600" class="mono">${ms.length}</div><div class="small muted">members</div></div>
+        <div><div style="font-size:21px;font-weight:600" class="mono">${gr}</div><div class="small muted">graduates</div></div>
+        <div><div style="font-size:21px;font-weight:600" class="mono">${att}%</div><div class="small muted">attendance</div></div>
+      </div>
+      <div class="small muted" style="margin-bottom:5px">Foundation School conversion</div>
+      <div class="bar ${conv>=50?'green':conv>=30?'':'red'}"><span style="width:${conv}%"></span></div></div>`;
+  });
+  html += `</div><div class="note" style="margin-top:16px">Every cell should have candidates for graduation each quarter. A cell with no one in the current set is worth a conversation.</div>`;
+  return html;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Departments
+   ══════════════════════════════════════════════════════════════ */
+function viewDepts(){
+  if(STATE.deptId){
+    const d = deptById(STATE.deptId);
+    const ms = STATE.members.filter(m=>m.depts.includes(d.id));
+    let h = `<button class="breadcrumb" onclick="go('depts')">← Back to departments</button>
+      <div class="card" style="margin-bottom:16px">
+      <div style="font-family:var(--serif);font-size:22px;font-weight:600">${esc(d.name)}</div>
+      <div class="small muted">${ms.length} serving · headed by ${esc(d.headName)}</div></div>
+      <div class="card" style="padding:6px"><div class="tbl-wrap"><table><thead><tr>
+      <th>Member</th><th>Cell</th><th>Foundation School</th><th>Attendance</th></tr></thead><tbody>`;
+    ms.sort((a,b)=>a.name.localeCompare(b.name)).forEach(m=>{
+      h += `<tr onclick="go('member','${m.id}')"><td><div class="who-row">
+        <div class="avatar">${initials(m.name)}</div><div class="nm">${esc(m.name)}</div></div></td>
+        <td class="small muted">${esc(cellById(m.cellId).name)}</td>
+        <td>${fsPill(m)}</td><td class="mono small">${attendanceRate(m)}%</td></tr>`;
+    });
+    if(!ms.length) h += `<tr class="nohover"><td colspan="4" class="empty">Nobody is serving here yet.</td></tr>`;
+    h += `</tbody></table></div></div>`;
+    return h;
+  }
+
+  let html = `<div class="grid g-auto">`;
+  DEPARTMENTS.forEach(d=>{
+    const ms = STATE.members.filter(m=>m.depts.includes(d.id));
+    const gr = ms.filter(m=>m.fs.graduated).length;
+    const pct = ms.length?Math.round(gr/ms.length*100):0;
+    html += `<div class="card" style="cursor:pointer" onclick="go('dept','${d.id}')" role="button" tabindex="0"
+      onkeydown="if(event.key==='Enter')go('dept','${d.id}')">
+      <div class="card-h"><span style="font-size:19px;color:var(--gold2)">${d.icon}</span>
+        <h3 style="font-family:var(--serif);font-size:17px">${esc(d.name)}</h3></div>
+      <div class="small muted" style="margin-bottom:12px">Head: ${esc(d.headName)}</div>
+      <div class="row" style="gap:18px;margin-bottom:12px">
+        <div><div style="font-size:21px;font-weight:600" class="mono">${ms.length}</div><div class="small muted">serving</div></div>
+        <div><div style="font-size:21px;font-weight:600" class="mono">${gr}</div><div class="small muted">graduates</div></div>
+      </div>
+      <div class="small muted" style="margin-bottom:5px">Graduated before serving</div>
+      <div class="bar ${pct===100?'green':'red'}"><span style="width:${pct}%"></span></div></div>`;
+  });
+  html += `</div><div class="note" style="margin-top:16px">Graduation from the Foundation School is a prerequisite for any leadership position. Anything short of 100% here is someone serving before they were ready.</div>`;
+  return html;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Reports
+   ══════════════════════════════════════════════════════════════ */
+function viewReports(){
+  const ms = scopeMembers();
+  const grads = ms.filter(m=>m.fs.graduated);
+  const months = last12Months();
+  const conv = ms.length?Math.round(grads.length/ms.length*100):0;
+
+  const withDays = grads.filter(m=>!m.fs.transferred && m.fs.enrolled);
+  const avgDays = withDays.length ? Math.round(withDays.reduce((s,m)=>
+    s + (new Date(m.fs.graduated) - new Date(m.fs.enrolled))/86400000, 0) / withDays.length) : 0;
+
+  const soulWinners = ms.filter(m=>m.souls>0).length;
+  const neverLed = grads.filter(m=>!m.leadership && !m.depts.length &&
+    (TODAY - new Date(m.joined+'T00:00:00'))/86400000 > 730).length;
+  const titheFaithful = ms.filter(m=>{
+    const mk = new Set(m.giving.filter(g=>g.type==='tithe').map(g=>monthKey(g.date)));
+    return months.filter(mo=>mk.has(mo.key)).length >= 12;
+  }).length;
+
+  let html = `<div class="grid g-auto" style="margin-bottom:16px">
+    <div class="card" style="text-align:center"><div class="small muted" style="margin-bottom:9px">First timer to graduate</div>
+      ${ring(conv,'Conversion rate', conv>=50?'var(--green)':'var(--gold)')}
+      <div class="small muted" style="margin-top:6px">${grads.length} of ${ms.length}</div></div>
+    <div class="kpi"><div class="kpi-label">First visit to graduation</div>
+      <div class="kpi-val">${avgDays}<span style="font-size:15px" class="muted"> days</span></div>
+      <div class="kpi-note">The course itself runs 7 weeks plus an examination week</div></div>
+    <div class="kpi green"><div class="kpi-label">Won a soul in 6 months</div><div class="kpi-val">${soulWinners}</div>
+      <div class="kpi-note">${ms.length?Math.round(soulWinners/ms.length*100):0}% of the church</div></div>
+    <div class="kpi blue"><div class="kpi-label">Tithe-faithful, 12 months</div><div class="kpi-val">${titheFaithful}</div>
+      <div class="kpi-note">Unbroken, month after month</div></div>
+    <div class="kpi purple"><div class="kpi-label">Two years in, never given a role</div><div class="kpi-val">${neverLed}</div>
+      <div class="kpi-note">Graduates with no department and no leadership</div></div>
+  </div>`;
+
+  html += `<div class="card" style="margin-bottom:16px"><div class="card-h"><h3>Cells side by side</h3>
+    <span class="hint">Quarterly report</span></div><div class="tbl-wrap"><table><thead><tr>
+    <th>Cell</th><th>Leader</th><th class="num">Members</th><th class="num">In the set</th>
+    <th>Conversion</th><th class="num">Attendance</th><th class="num">Souls</th></tr></thead><tbody>`;
+  CELLS.map(c=>{
+    const cm = STATE.members.filter(m=>m.cellId===c.id);
+    return { c, cm, conv: cm.length?Math.round(cm.filter(m=>m.fs.graduated).length/cm.length*100):0,
+      att: cm.length?Math.round(cm.reduce((s,m)=>s+attendanceRate(m),0)/cm.length):0 };
+  }).sort((a,b)=>b.conv-a.conv).forEach(({c,cm,conv,att})=>{
+    html += `<tr onclick="go('cell','${c.id}')"><td>${esc(c.name)}</td>
+      <td class="small muted">${esc(c.leaderName)}</td>
+      <td class="num">${cm.length}</td>
+      <td class="num">${cm.filter(m=>m.fs.enrolled&&!m.fs.graduated).length}</td>
+      <td><div class="row" style="gap:8px"><div class="bar ${conv>=50?'green':conv>=30?'':'red'}" style="width:66px">
+        <span style="width:${conv}%"></span></div><span class="mono small">${conv}%</span></div></td>
+      <td class="num mono">${att}%</td>
+      <td class="num">${cm.reduce((s,m)=>s+m.souls,0)}</td></tr>`;
+  });
+  html += `</tbody></table></div></div>`;
+
+  html += `<div class="card"><div class="card-h"><h3>Graduation rate by department</h3>
+    <span class="hint">Which department disciples best</span></div><div class="tbl-wrap"><table><thead><tr>
+    <th>Department</th><th class="num">Serving</th><th class="num">Graduates</th><th>Rate</th></tr></thead><tbody>`;
+  DEPARTMENTS.map(d=>{
+    const dm = STATE.members.filter(m=>m.depts.includes(d.id));
+    return { d, dm, pct: dm.length?Math.round(dm.filter(m=>m.fs.graduated).length/dm.length*100):0 };
+  }).sort((a,b)=>b.pct-a.pct).forEach(({d,dm,pct})=>{
+    html += `<tr onclick="go('dept','${d.id}')"><td>${esc(d.name)}</td><td class="num">${dm.length}</td>
+      <td class="num">${dm.filter(m=>m.fs.graduated).length}</td>
+      <td><div class="row" style="gap:8px"><div class="bar ${pct===100?'green':'red'}" style="width:80px">
+      <span style="width:${pct}%"></span></div><span class="mono small">${pct}%</span></div></td></tr>`;
+  });
+  html += `</tbody></table></div>
+    <div class="note" style="margin-top:14px">Every figure here is counted from records the church already keeps. Nothing is typed in twice.</div></div>`;
+  return html;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Storage — server-side when the viewer has it, browser when not
+   ══════════════════════════════════════════════════════════════ */
+const STORE = { events: [], save: async () => {} };
+
+function applyEvent(e){
+  const m = byId(e.id);
+  if(!m) return;
+  if(e.t === 'checkin'){
+    if(!m.attendance.some(a => a.date===e.date && a.type===e.type))
+      m.attendance.push({ date:e.date, type:e.type });
+  }
+  if(e.t === 'enrol'){
+    m.fs.enrolled = e.date;
+  }
+  if(e.t === 'class'){
+    m.fs.classes[e.cls] = { attended:e.attended, assignment:e.assignment, date:e.date };
+  }
+  if(e.t === 'exam'){
+    m.fs.exam = { raw:e.raw, date:e.date, sitting:(m.fs.exam?m.fs.exam.sitting+1:1) };
+  }
+  if(e.t === 'grad'){
+    m.fs.graduated = e.date; m.fs.certNo = e.certNo;
+  }
+  if(e.t === 'give'){
+    m.giving.push({ date:e.date, type:e.type, amount:e.amount });
+  }
+}
+
+async function initStore(){
+  let ref = null;
+  try{
+    if(window.claude && window.claude.use){
+      const db = await window.claude.use('db');
+      if(db) ref = db.doc('chms/events');
+    }
+  }catch(err){ ref = null; }
+
+  let loaded = [];
+  if(ref){
+    try{
+      const snap = await ref.get();
+      const d = snap ? (snap.data !== undefined ? snap.data : snap) : null;
+      if(d && Array.isArray(d.list)) loaded = d.list;
+    }catch(err){}
+    STORE.save = async () => { try{ await ref.set({ list: STORE.events }); }catch(err){} };
+  } else {
+    try{
+      const raw = localStorage.getItem('chms-events');
+      if(raw) loaded = JSON.parse(raw) || [];
+    }catch(err){}
+    STORE.save = async () => { try{ localStorage.setItem('chms-events', JSON.stringify(STORE.events)); }catch(err){} };
+  }
+
+  const pending = STORE.events.slice();        // anything recorded before storage answered
+  loaded.forEach(applyEvent);
+  STORE.events = loaded.concat(pending);
+  if(pending.length) STORE.save();
+}
+
+function record(e){
+  STORE.events.push(e);
+  applyEvent(e);
+  STORE.save();
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Shell
+   ══════════════════════════════════════════════════════════════ */
+const NAV = {
+  dashboard: { icon:'▣', label:'Dashboard',        title:'Dashboard' },
+  members:   { icon:'☖', label:'Members',          title:'Members' },
+  fs:        { icon:'✎', label:'Foundation School',title:'Foundation School' },
+  attendance:{ icon:'✓', label:'Attendance',       title:'Attendance' },
+  giving:    { icon:'◈', label:'Giving',           title:'Giving' },
+  cells:     { icon:'⌂', label:'Cells',            title:'Cell groups' },
+  depts:     { icon:'✦', label:'Departments',      title:'Departments' },
+  reports:   { icon:'▤', label:'Reports',          title:'Reports' },
+  myprofile: { icon:'☺', label:'My record',        title:'My record' }
+};
+
+const SUBTITLE = {
+  dashboard:  () => `${CHURCH.name} · ${CHURCH.group}`,
+  members:    () => `Everyone ${ROLES[STATE.role].scope==='cell'?'in your cell':ROLES[STATE.role].scope==='dept'?'in your department':'on the roll'}`,
+  fs:         () => 'Seven classes, an examination week, and graduation each quarter',
+  attendance: () => 'Cell meetings, Sunday and midweek services, and Foundation School classes',
+  giving:     () => 'Tithes, first fruits, offerings, seed and partnership',
+  cells:      () => `${CELLS.length} cells across Harare`,
+  depts:      () => `${DEPARTMENTS.length} departments`,
+  reports:    () => 'Counted from records the church already keeps',
+  member:     () => 'Every record in one place',
+  cell:       () => 'Cell group',
+  dept:       () => 'Department',
+  myprofile:  () => 'Your Foundation School progress, attendance and giving'
+};
+
+function render(){
+  const r = ROLES[STATE.role];
+  const view = STATE.view;
+  const navKey = ['member','cell','dept'].includes(view)
+    ? ({member:'members',cell:'cells',dept:'depts'})[view] : view;
+
+  const counts = {
+    members: scopeMembers().length,
+    fs: scopeMembers().filter(m=>m.fs.enrolled && !m.fs.graduated).length,
+    cells: CELLS.length, depts: DEPARTMENTS.length
+  };
+
+  let body = '';
+  if(view === 'dashboard')       body = viewDashboard();
+  else if(view === 'members')    body = viewMembers();
+  else if(view === 'member' || view === 'myprofile') body = viewMember();
+  else if(view === 'fs')         body = viewFS();
+  else if(view === 'attendance') body = viewAttendance();
+  else if(view === 'giving')     body = viewGiving();
+  else if(view === 'cells' || view === 'cell') body = viewCells();
+  else if(view === 'depts' || view === 'dept') body = viewDepts();
+  else if(view === 'reports')    body = viewReports();
+
+  const title = view==='member' ? (byId(STATE.memberId)||{}).name || 'Member'
+    : view==='cell' ? (cellById(STATE.cellId)||{}).name
+    : view==='dept' ? (deptById(STATE.deptId)||{}).name
+    : NAV[view] ? NAV[view].title : '';
+
+  document.getElementById('app').innerHTML = `
+  <div class="app">
+    ${STATE.menuOpen ? '<div class="scrim" onclick="toggleMenu()"></div>' : ''}
+    <aside class="sidebar ${STATE.menuOpen?'open':''}">
+      <div class="brand"><div class="brand-mark">
+        <div class="brand-emblem">✠</div>
+        <div><div class="brand-name">LoveWorld ChMS</div>
+        <div class="brand-sub">${esc(CHURCH.name)}</div></div></div></div>
+      <nav class="nav">
+        <div class="nav-group">Church</div>
+        ${r.nav.map(k=>`<button class="nav-item ${navKey===k?'on':''}" onclick="go('${k}')">
+          <span class="nav-ico">${NAV[k].icon}</span>${NAV[k].label}
+          ${counts[k]!==undefined?`<span class="nav-count">${counts[k]}</span>`:''}</button>`).join('')}
+      </nav>
+      <div class="who"><div class="who-box">
+        <div class="who-label">Signed in as</div>
+        <select onchange="switchRole(this.value)" aria-label="Switch role">
+          ${Object.entries(ROLES).map(([k,v])=>`<option value="${k}" ${STATE.role===k?'selected':''}>${v.label}</option>`).join('')}
+        </select>
+        <div class="who-name">${esc(ME.name||'')}<br><span class="muted">${esc(ME.sub||'')}</span></div>
+      </div></div>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <button class="menu-btn" onclick="toggleMenu()" aria-label="Open menu">☰</button>
+        <div><h1>${esc(title)}</h1><div class="sub">${esc((SUBTITLE[view]||(()=>''))())}</div></div>
+        <div class="topbar-spacer"></div>
+        ${view==='members'?`<input class="search" placeholder="Search by name, cell or status"
+          value="${esc(STATE.search)}" oninput="onSearch(this.value)" aria-label="Search members"/>`:''}
+      </header>
+      <div class="content" id="content">${body}</div>
+    </main>
+  </div>`;
+}
+
+/* ── Navigation ─────────────────────────────────────────────── */
+function go(view, id){
+  if(view === 'member'){ STATE.memberId = id; STATE.view = 'member'; }
+  else if(view === 'cell'){ STATE.cellId = id; STATE.view = 'cell'; }
+  else if(view === 'dept'){ STATE.deptId = id; STATE.view = 'dept'; }
+  else { STATE.view = view; STATE.cellId = null; STATE.deptId = null; STATE.tab = null; }
+  if(view === 'members') STATE.search = '';
+  STATE.menuOpen = false;
+  render();
+  const c = document.getElementById('content'); if(c) c.scrollTop = 0;
+}
+function setTab(t){ STATE.tab = t; render(); }
+function toggleMenu(){ STATE.menuOpen = !STATE.menuOpen; render(); }
+function switchRole(role){ setRole(role); STATE.tab = null; STATE.search=''; render(); }
+function onSearch(v){
+  STATE.search = v;
+  const c = document.getElementById('content');
+  c.innerHTML = viewMembers();
+}
+
+/* ── Toast ──────────────────────────────────────────────────── */
+let toastTimer;
+function toast(msg){
+  document.querySelectorAll('.toast').forEach(t=>t.remove());
+  const el = document.createElement('div');
+  el.className = 'toast'; el.textContent = msg; el.setAttribute('role','status');
+  document.body.appendChild(el);
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>el.remove(), 3200);
+}
+
+/* ── Modal ──────────────────────────────────────────────────── */
+function modal(html){
+  closeModal();
+  const bg = document.createElement('div');
+  bg.className = 'modal-bg';
+  bg.innerHTML = `<div class="modal" role="dialog" aria-modal="true">${html}</div>`;
+  bg.addEventListener('click', e => { if(e.target === bg) closeModal(); });
+  document.body.appendChild(bg);
+  const f = bg.querySelector('input,select,textarea,button'); if(f) f.focus();
+}
+function closeModal(){ document.querySelectorAll('.modal-bg').forEach(m=>m.remove()); }
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeModal(); });
+
+/* ══════════════════════════════════════════════════════════════
+   Actions
+   ══════════════════════════════════════════════════════════════ */
+function checkIn(){
+  const who = document.getElementById('att-who').value;
+  const type = document.getElementById('att-type').value;
+  if(!who){ toast('Pick a member first.'); return; }
+  const m = byId(who);
+  const today = iso(TODAY);
+  if(m.attendance.some(a => a.date===today && a.type===type)){
+    toast(`${m.name} is already checked in for ${type.toLowerCase()}.`); return;
+  }
+  record({ t:'checkin', id:who, date:today, type });
+  render();
+  toast(`${m.name} checked in.`);
+}
+
+function enrol(id){
+  const m = byId(id);
+  record({ t:'enrol', id, date: iso(TODAY) });
+  render();
+  toast(`${m.name} enrolled. Class 1 opens the set.`);
+}
+
+function openClass(memberId, clsId){
+  const m = byId(memberId), c = FS_CLASSES.find(x=>x.id===clsId);
+  const r = m.fs.classes[clsId] || { attended:false, assignment:false };
+  const editable = canEditFS() && !m.fs.graduated;
+  modal(`
+    <h3>${esc(c.no)} — ${esc(c.title)}</h3>
+    <div class="msub">${esc(m.name)}</div>
+    <p style="font-size:13.5px;color:var(--text2);margin:0 0 12px">${esc(c.aim)}</p>
+    <div class="small muted" style="margin-bottom:14px">${esc(c.scripture)}</div>
+    <div class="note" style="margin-bottom:16px"><strong>Take-home assignment.</strong> ${esc(c.assignment)}</div>
+    ${editable ? `
+      <div class="field"><label><input type="checkbox" id="k-att" ${r.attended?'checked':''} style="width:auto;margin-right:8px"/>
+        Attended the full class</label></div>
+      <div class="field"><label><input type="checkbox" id="k-asg" ${r.assignment?'checked':''} style="width:auto;margin-right:8px"/>
+        Assignment completed and submitted</label></div>
+      <div class="modal-actions">
+        <button class="btn ghost" onclick="closeModal()">Cancel</button>
+        <button class="btn primary" onclick="saveClass('${memberId}','${clsId}')">Save</button></div>`
+    : `<div class="row" style="gap:10px">
+        <span class="pill ${r.attended?'green':'grey'}">${r.attended?'Attended':'Not attended'}</span>
+        <span class="pill ${r.assignment?'green':'grey'}">${r.assignment?'Assignment in':'Assignment outstanding'}</span></div>
+       <div class="modal-actions"><button class="btn" onclick="closeModal()">Close</button></div>`}`);
+}
+
+function saveClass(memberId, clsId){
+  const att = document.getElementById('k-att').checked;
+  const asg = document.getElementById('k-asg').checked;
+  record({ t:'class', id:memberId, cls:clsId, attended:att, assignment:asg, date:iso(TODAY) });
+  closeModal(); render();
+  toast(asg ? 'Class and assignment recorded.' : att ? 'Attendance recorded. Assignment still outstanding.' : 'Class marked as missed.');
+}
+
+function openExam(id){
+  const m = byId(id), g = grade(m);
+  modal(`
+    <h3>Examination score</h3>
+    <div class="msub">${esc(m.name)} · Section C is worth 40 of the 100 marks</div>
+    ${!g.eligible ? `<div class="note red" style="margin-bottom:16px">
+      ${7-g.a} class${7-g.a===1?'':'es'} and ${7-g.b} assignment${7-g.b===1?'':'s'} still outstanding.
+      These should be completed before the student is presented for the examination.</div>` : ''}
+    <div class="field"><label>Raw score out of 100</label>
+      <input type="number" id="ex-raw" min="0" max="100" value="${g.raw!==null?g.raw:''}" placeholder="0–100"/></div>
+    <div class="note">Section A already gives ${g.secA.toFixed(1)} and Section B ${g.secB.toFixed(1)}.
+      Below 50 here means retaking classes and waiting for the next set.</div>
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn primary" onclick="saveExam('${id}')">Record score</button></div>`);
+}
+
+function saveExam(id){
+  const v = parseInt(document.getElementById('ex-raw').value, 10);
+  if(isNaN(v) || v < 0 || v > 100){ toast('Enter a score between 0 and 100.'); return; }
+  record({ t:'exam', id, raw:v, date: iso(TODAY) });
+  closeModal(); render();
+  const m = byId(id);
+  toast(v >= EXAM_PASS
+    ? `${m.name} passed with ${grade(m).total.toFixed(0)} overall.${v<100?' A makeup class is due before graduation.':''}`
+    : `${m.name} scored under 50. Withdrawn from this graduation and scheduled for the next set.`);
+}
+
+function graduate(id){
+  const m = byId(id), g = grade(m);
+  if(!g.passed){ toast('The examination has not been passed.'); return; }
+  modal(`
+    <h3>Present for graduation</h3>
+    <div class="msub">${esc(m.name)}</div>
+    <div class="tbl-wrap"><table><tbody>
+      <tr class="nohover"><td class="small muted">Section A — attendance</td><td class="num mono">${g.secA.toFixed(1)} / 30</td></tr>
+      <tr class="nohover"><td class="small muted">Section B — assignments</td><td class="num mono">${g.secB.toFixed(1)} / 30</td></tr>
+      <tr class="nohover"><td class="small muted">Section C — examination</td><td class="num mono">${g.secC.toFixed(1)} / 40</td></tr>
+      <tr class="nohover"><td style="font-weight:600">Final mark</td><td class="num mono" style="font-weight:600">${g.total.toFixed(1)} / 100</td></tr>
+    </tbody></table></div>
+    <div class="note green" style="margin-top:14px">The Group Pastor vets every candidate before graduation day.
+      A certificate is issued and the three-month post-graduation assessment begins.</div>
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeModal()">Not yet</button>
+      <button class="btn primary" onclick="confirmGraduate('${id}')">Issue certificate</button></div>`);
+}
+
+function confirmGraduate(id){
+  const certNo = 'CEHC/FS/' + TODAY.getFullYear() + '/' + (400 + Math.floor(Math.random()*599));
+  record({ t:'grad', id, date: iso(TODAY), certNo });
+  closeModal(); render();
+  toast(`${byId(id).name} has graduated. Certificate ${certNo}.`);
+}
+
+function openGiving(preselect){
+  const ms = scopeMembers().slice().sort((a,b)=>a.name.localeCompare(b.name));
+  modal(`
+    <h3>Record giving</h3>
+    <div class="msub">Entered by the Finance Officer, Treasurer or Pastor</div>
+    <div class="field"><label>Member</label>
+      <select id="gv-who">${ms.map(m=>`<option value="${m.id}" ${m.id===preselect?'selected':''}>${esc(m.name)}</option>`).join('')}</select></div>
+    <div class="field"><label>Type</label>
+      <select id="gv-type">${GIVING_TYPES.map(t=>`<option value="${t.id}">${esc(t.label)} — ${esc(t.flow)}</option>`).join('')}</select></div>
+    <div class="field"><label>Amount in USD</label>
+      <input type="number" id="gv-amt" min="0" step="0.01" placeholder="0.00"/></div>
+    <div class="field"><label>Date</label>
+      <input type="date" id="gv-date" value="${iso(TODAY)}"/></div>
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn primary" onclick="saveGiving()">Save entry</button></div>`);
+}
+
+function saveGiving(){
+  const id = document.getElementById('gv-who').value;
+  const type = document.getElementById('gv-type').value;
+  const amt = parseFloat(document.getElementById('gv-amt').value);
+  const date = document.getElementById('gv-date').value || iso(TODAY);
+  if(isNaN(amt) || amt <= 0){ toast('Enter an amount greater than zero.'); return; }
+  record({ t:'give', id, type, amount:amt, date });
+  closeModal(); render();
+  toast(`${money(amt)} recorded for ${byId(id).name}.`);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Boot
+   ══════════════════════════════════════════════════════════════ */
+setRole('pastor');
+render();
+
+(async () => {
+  try{ await initStore(); render(); }catch(err){}
+})();
+
+</script>
+</body>
+</html>
